@@ -1,0 +1,8 @@
+# Initial velocity of the snowball when thrown
+launch-velocity: 1.5
+
+# At what speed the snowball will disintegrate (velocity > threshold)
+threshold: 0.25
+
+# Velocity damped when it hits a service (velocity *= damping)
+damping: 0.75
