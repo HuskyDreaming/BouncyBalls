@@ -1,8 +1,17 @@
-# Initial velocity of the snowball when thrown
-launch-velocity: 1.5
 
-# At what speed the snowball will disintegrate (velocity > threshold)
-threshold: 0.25
+Projectile:
+  # Initial velocity of the snowball when thrown
+  launch-velocity: 1.5
 
-# Velocity damped when it hits a service (velocity *= damping)
-damping: 0.75
+  # At what speed the snowball will disintegrate (velocity > threshold)
+  threshold: 0.25
+
+  # Velocity damped when it hits a service (velocity *= damping)
+  damping: 0.75
+
+Particle:
+  # See types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html)
+  type: SNOW_SHOVEL
+
+  # How many particles spawn at the projectile Location
+  amount: 1

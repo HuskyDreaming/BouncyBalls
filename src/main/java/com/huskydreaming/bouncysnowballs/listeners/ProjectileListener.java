@@ -1,8 +1,8 @@
 package com.huskydreaming.bouncysnowballs.listeners;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import com.huskydreaming.bouncysnowballs.data.ParticleData;
+import com.huskydreaming.bouncysnowballs.data.ProjectileData;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -12,26 +12,43 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProjectileListener implements Listener {
 
-    private final double launchVelocity;
-    private final double damping;
-    private final double threshold;
+    private final ParticleData particleData;
+    private final ProjectileData projectileData;
+    private final List<Projectile> projectiles = new ArrayList<>();
 
-    public ProjectileListener(double launchVelocity, double damping, double threshold) {
-        this.launchVelocity = launchVelocity;
-        this.damping = damping;
-        this.threshold = threshold;
+    public ProjectileListener(ParticleData particleData, ProjectileData projectileData) {
+        this.particleData = particleData;
+        this.projectileData = projectileData;
+    }
+
+
+    public void scheduleParticles(Plugin plugin) {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            for(Projectile projectile : projectiles) {
+                Location location = projectile.getLocation();
+                World world = location.getWorld();
+                if(world != null) {
+                    world.spawnParticle(particleData.getParticle(), location, particleData.getCount());
+                }
+            }
+        }, 0, 1L);
     }
 
     @EventHandler
     public void onShoot(ProjectileLaunchEvent event) {
         if(event.getEntity().getShooter() instanceof Player player) {
             if(event.getEntity() instanceof Snowball snowball) {
-                snowball.setVelocity(player.getLocation().getDirection().multiply(launchVelocity));
+                snowball.setVelocity(player.getLocation().getDirection().multiply(projectileData.getLaunchVelocity()));
+                projectiles.add(snowball);
             }
         }
     }
@@ -49,8 +66,8 @@ public class ProjectileListener implements Listener {
             Vector velocity = projectile.getVelocity();
             double speed = velocity.length();
 
-            speed *= damping;
-            if(speed > threshold) {
+            speed *= projectileData.getDamping();
+            if(speed > projectileData.getThreshold()) {
 
                 Vector direction = new Vector(blockFace.getModX(), blockFace.getModY(), blockFace.getModZ());
                 direction = direction.multiply(velocity.dot(direction)).multiply(2.0D);
@@ -58,10 +75,12 @@ public class ProjectileListener implements Listener {
                 Projectile newProjectile = (Projectile) projectile.getWorld().spawnEntity(projectile.getLocation(), projectile.getType());
                 newProjectile.setVelocity(velocity.subtract(direction).normalize().multiply(speed));
                 newProjectile.setShooter(projectile.getShooter());
-
-                projectile.remove();
+                projectiles.add(newProjectile);
             }
         }
+
+        projectiles.remove(projectile);
+        projectile.remove();
     }
 
     private BlockFace getInverseFace(Projectile projectile) {
