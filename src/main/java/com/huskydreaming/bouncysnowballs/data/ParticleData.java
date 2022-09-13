@@ -1,22 +1,15 @@
 package com.huskydreaming.bouncysnowballs.data;
 
+import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.World;
 
-public class ParticleData {
+public record ParticleData(Particle particle, int count) {
 
-    private final Particle particle;
-    private final int count;
-
-    public ParticleData(Particle particle, int count) {
-        this.particle = particle;
-        this.count = count;
-    }
-
-    public Particle getParticle() {
-        return particle;
-    }
-
-    public int getCount() {
-        return count;
+    public void spawn(Location location) {
+        World world = location.getWorld();
+        if(world != null) {
+            world.spawnParticle(particle, location, count);
+        }
     }
 }

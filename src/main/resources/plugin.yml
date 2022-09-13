@@ -1,5 +1,5 @@
 name: BouncySnowballs
 main: com.huskydreaming.bouncysnowballs.BouncySnowballsPlugin
-version: 2.0
-api-version: 1.19
+version: 3.0-RELEASE
+api-version: 1.16
 author: HuskyDreaming

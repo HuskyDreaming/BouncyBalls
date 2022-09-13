@@ -1,4 +1,3 @@
-
 Projectile:
   # Initial velocity of the snowball when thrown
   launch-velocity: 1.5
