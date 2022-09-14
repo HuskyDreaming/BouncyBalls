@@ -6,7 +6,13 @@
 
     <groupId>org.example</groupId>
     <artifactId>BouncySnowballs</artifactId>
-    <version>3.0-RELEASE</version>
+    <version>4.0-RELEASE</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -35,6 +41,12 @@
             <artifactId>spigot-api</artifactId>
             <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.1</version>
         </dependency>
     </dependencies>
 

@@ -8,9 +8,24 @@ Projectile:
   # Velocity damped when it hits a service (velocity *= damping)
   damping: 0.75
 
+  # Snowball will return into your inventory if it hits you.
+  returns: true
+
+  # Snowball will drop as an item when it stops bouncing.
+  drops: true
+
+  # Blocks the projectile can bounce on. Remove/Leave empty if you want to have it bounce on everything.
+  blocks:
+  - GRASS_BLOCK
+  - SNOW_BLOCK
+  - DIRT
+
 Particle:
   # See types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html)
   type: SNOW_SHOVEL
 
   # How many particles spawn at the projectile Location
   amount: 1
+
+  # Ticks per particles, the greater the tick count, the more efficient it will be.
+  ticks: 2

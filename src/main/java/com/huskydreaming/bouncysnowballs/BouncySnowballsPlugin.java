@@ -1,9 +1,10 @@
 package com.huskydreaming.bouncysnowballs;
 
-import com.huskydreaming.bouncysnowballs.data.ParticleData;
-import com.huskydreaming.bouncysnowballs.data.ProjectileData;
 import com.huskydreaming.bouncysnowballs.listeners.ProjectileListener;
-import org.bukkit.Particle;
+import com.huskydreaming.bouncysnowballs.service.ParticleService;
+import com.huskydreaming.bouncysnowballs.service.ParticleServiceImpl;
+import com.huskydreaming.bouncysnowballs.service.ProjectileService;
+import com.huskydreaming.bouncysnowballs.service.ProjectileServiceImpl;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,22 +14,15 @@ public class BouncySnowballsPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        ParticleData particleData = new ParticleData(
-                Particle.valueOf(getConfig().getString("Particle.type")),
-                getConfig().getInt("Particle.count")
-        );
+        ProjectileService projectileService = new ProjectileServiceImpl();
+        projectileService.deserialize(this);
 
-        ProjectileData projectileData = new ProjectileData(
-                getConfig().getDouble("Projectile.launch-velocity"),
-                getConfig().getDouble("Projectile.damping"),
-                getConfig().getDouble("Projectile.threshold")
-        );
+        ParticleService particleService = new ParticleServiceImpl();
+        particleService.deserialize(this);
+        particleService.run(this, projectileService.getProjectiles());
+
 
         PluginManager pluginManager = getServer().getPluginManager();
-
-        ProjectileListener projectileListener = new ProjectileListener(particleData, projectileData);
-        projectileListener.scheduleParticles(this);
-
-        pluginManager.registerEvents(projectileListener, this);
+        pluginManager.registerEvents(new ProjectileListener(projectileService), this);
     }
 }
