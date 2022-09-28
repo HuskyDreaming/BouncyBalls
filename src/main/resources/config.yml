@@ -1,31 +1,57 @@
-Projectile:
-  # Initial velocity of the snowball when thrown
-  launch-velocity: 1.5
+balls:
+  example:
+    projectile:
+      # See Types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
+      item: SNOWBALL
 
-  # At what speed the snowball will disintegrate (velocity > threshold)
-  threshold: 0.25
+      # Initial velocity of the snowball when thrown
+      launch-velocity: 1.5
 
-  # Velocity damped when it hits a service (velocity *= damping)
-  damping: 0.75
+      # At what speed the snowball will disintegrate (velocity > threshold)
+      threshold: 0.25
 
-  # Snowball will return into your inventory if it hits you.
-  returns: true
+      # Velocity damped when it hits a service (velocity *= damping)
+      damping: 0.75
 
-  # Snowball will drop as an item when it stops bouncing.
-  drops: true
+      # Snowball will return into your inventory if it hits you.
+      returns: true
 
-  # Blocks the projectile can bounce on. Remove/Leave empty if you want to have it bounce on everything.
-  blocks:
-  - GRASS_BLOCK
-  - SNOW_BLOCK
-  - DIRT
+      # Snowball will drop as an item when it stops bouncing.
+      drops: true
 
-Particle:
-  # See types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html)
-  type: SNOW_SHOVEL
+      # Blocks the projectile can bounce on. Set to blocks: [] if you want it to bounce on everything!
+      blocks:
+        - GRASS_BLOCK
+        - SNOW_BLOCK
+        - DIRT
 
-  # How many particles spawn at the projectile Location
-  amount: 1
+    particle:
+      # See types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html)
+      type: SNOW_SHOVEL
 
-  # Ticks per particles, the greater the tick count, the more efficient it will be.
-  ticks: 2
+      # How many particles spawn at the projectile Location
+      amount: 1
+  fireball:
+    projectile:
+      item: FIRE_BALL
+      launch-velocity: 1.0
+      threshold: 0.5
+      damping: 0.5
+      returns: false
+      drops: false
+      blocks: []
+    particle:
+      type: FLAME
+      amount: 1
+  slime_ball:
+    projectile:
+      item: SLIME_BALL
+      launch-velocity: 1.2
+      threshold: 0.3
+      damping: 0.6
+      returns: false
+      drops: false
+      blocks: []
+    particle:
+      type: SLIME
+      amount: 1

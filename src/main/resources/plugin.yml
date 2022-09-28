@@ -1,5 +1,10 @@
-name: BouncySnowballs
-main: com.huskydreaming.bouncysnowballs.BouncySnowballsPlugin
-version: 4.0-RELEASE
+name: BouncyBall
+main: com.huskydreaming.bouncyball.BouncyBallPlugin
+version: 5.0-RELEASE
 api-version: 1.16
 author: HuskyDreaming
+
+commands:
+  bouncyball:
+    description: Bouncyball command.
+    aliases: [bb, bouncyb, bball]
