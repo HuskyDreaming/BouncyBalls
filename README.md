@@ -1,2 +1,2 @@
-# BouncySnowballs
-Snowballs are a little more juicy :)
+# BouncyBalls
+Projectile balls are a little more juicy :)
