@@ -7,7 +7,6 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Projectile;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
@@ -16,16 +15,21 @@ import java.util.Map;
 public class ParticleServiceImpl implements ParticleService {
 
     private final Map<String, ParticleData> particleDataMap = new HashMap<>();
+    private final ProjectileService projectileService;
+
+    public ParticleServiceImpl(ProjectileService projectileService) {
+        this.projectileService = projectileService;
+    }
 
     @Override
     public void deserialize(Plugin plugin) {
         FileConfiguration configuration = plugin.getConfig();
 
-        ConfigurationSection section = configuration.getConfigurationSection("balls");
+        ConfigurationSection section = configuration.getConfigurationSection("");
         if(section == null) return;
 
         for(String key : section.getKeys(false)) {
-            String path = "balls." + key + ".particle";
+            String path = key + ".particle";
 
             ParticleData particleData = new ParticleData(
                     Particle.valueOf(configuration.getString(path + ".type")),
@@ -37,19 +41,14 @@ public class ParticleServiceImpl implements ParticleService {
     }
 
     @Override
-    public void run(Plugin plugin, Map<Projectile, String> projectiles) {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-
-            projectiles.forEach((projectile, s) -> {
-                Location location = projectile.getLocation();
-                World world = location.getWorld();
-                if(world != null) {
-                    ParticleData particleData = particleDataMap.get(s);
-                    if(particleData != null) {
-                        world.spawnParticle(particleData.particle(), location, particleData.count());
-                    }
-                }
-            });
-        }, 0L, 1L);
+    public void run(Plugin plugin) {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> projectileService.getProjectileMap().forEach((projectile, s) -> {
+            Location location = projectile.getLocation();
+            World world = location.getWorld();
+            if(world != null) {
+                ParticleData particleData = particleDataMap.get(s);
+                if(particleData != null) world.spawnParticle(particleData.particle(), location, particleData.count());
+            }
+        }), 0L, 1L);
     }
 }

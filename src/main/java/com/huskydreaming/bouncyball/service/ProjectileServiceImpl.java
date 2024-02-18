@@ -15,8 +15,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
@@ -29,26 +27,26 @@ import java.util.Map;
 public class ProjectileServiceImpl implements ProjectileService {
 
     private NamespacedKey projectileNameSpacedKey;
-    private final String projectileDataKey = "BOUNCY_BALL";
 
     private final Map<String, ProjectileData> projectileDataMap = new HashMap<>();
     private final Map<Projectile, String> projectileMap = new HashMap<>();
 
     @Override
     public void deserialize(Plugin plugin) {
-        projectileNameSpacedKey = new NamespacedKey(plugin, projectileDataKey);
+        projectileNameSpacedKey = new NamespacedKey(plugin, "BOUNCY_BALL");
 
         FileConfiguration configuration = plugin.getConfig();
 
-        ConfigurationSection section = configuration.getConfigurationSection("balls");
+        ConfigurationSection section = configuration.getConfigurationSection("");
         if(section != null) {
             for (String key : section.getKeys(false)) {
-                String path = "balls." + key + ".projectile";
+                String path = key + ".projectile";
                 ProjectileData projectileData = new ProjectileData(
                         configuration.getStringList(path + ".blocks"),
                         configuration.getString(path + ".item"),
                         configuration.getBoolean(path + ".returns"),
                         configuration.getBoolean(path + ".drops"),
+                        configuration.getBoolean(path + ".removes"),
                         configuration.getDouble(path + ".launch-velocity"),
                         configuration.getDouble(path + ".damping"),
                         configuration.getDouble(path + ".threshold")
@@ -70,13 +68,15 @@ public class ProjectileServiceImpl implements ProjectileService {
     }
 
     @Override
-    public void launchProjectile(Plugin plugin, Player player, String key) {
+    public void launchProjectile(Plugin plugin, Player player, ItemStack itemStack, String key) {
         ProjectileData projectileData = projectileDataMap.get(key);
 
-        Snowball projectile = player.launchProjectile(Snowball.class);
-        MetadataValue metadataValue = new FixedMetadataValue(plugin, key);
+        if(projectileData.removes()) itemStack.setAmount(itemStack.getAmount() - 1);
 
-        projectile.setMetadata(projectileDataKey, metadataValue);
+        Snowball projectile = player.launchProjectile(Snowball.class);
+        PersistentDataContainer persistentDataContainer = projectile.getPersistentDataContainer();
+
+        persistentDataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);
         projectile.setVelocity(player.getLocation().getDirection().multiply(projectileData.launchVelocity()));
         projectile.setItem(new ItemStack(Material.valueOf(projectileData.item())));
 
@@ -85,15 +85,13 @@ public class ProjectileServiceImpl implements ProjectileService {
 
     @Override
     public boolean hasProjectileData(Entity entity) {
-        return entity.hasMetadata(projectileDataKey);
+        return entity.getPersistentDataContainer().has(projectileNameSpacedKey, PersistentDataType.STRING);
     }
 
     @Override
     public String getKeyFromProjectile(Projectile projectile) {
-        MetadataValue key = projectile.getMetadata(projectileDataKey).get(0);
-        if(key == null) return null;
-
-        return key.asString();
+        PersistentDataContainer persistentDataContainer = projectile.getPersistentDataContainer();
+        return persistentDataContainer.get(projectileNameSpacedKey, PersistentDataType.STRING);
     }
 
     @Override
@@ -184,18 +182,19 @@ public class ProjectileServiceImpl implements ProjectileService {
                 direction = direction.multiply(velocity.dot(direction)).multiply(2.0D);
 
                 String key = getKeyFromProjectile(projectile);
-                MetadataValue metadataValue = new FixedMetadataValue(plugin, key);
 
                 Snowball newProjectile = (Snowball) projectile.getWorld().spawnEntity(projectile.getLocation(), projectile.getType());
+                PersistentDataContainer persistentDataContainer = newProjectile.getPersistentDataContainer();
+                persistentDataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);
                 newProjectile.setItem(new ItemStack(Material.valueOf(projectileData.item())));
                 newProjectile.setVelocity(velocity.subtract(direction).normalize().multiply(speed));
-                newProjectile.setMetadata(key, metadataValue);
                 newProjectile.setShooter(projectile.getShooter());
-
+                newProjectile.setInvulnerable(true);
                 return newProjectile;
-            } else {
-                dropProjectile(projectile);
             }
+
+            dropProjectile(projectile);
+            removeProjectile(projectile);
         }
         return null;
     }

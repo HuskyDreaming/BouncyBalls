@@ -6,6 +6,8 @@ import com.huskydreaming.bouncyball.service.ParticleService;
 import com.huskydreaming.bouncyball.service.ParticleServiceImpl;
 import com.huskydreaming.bouncyball.service.ProjectileService;
 import com.huskydreaming.bouncyball.service.ProjectileServiceImpl;
+import com.huskydreaming.bouncyball.storage.Locale;
+import com.huskydreaming.bouncyball.storage.Yaml;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,16 +18,26 @@ public class BouncyBallPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
+        Yaml locale = new Yaml("locale");
+        locale.load(this);
+        Locale.setConfiguration(locale.getConfiguration());
+
+        for (Locale message : Locale.values()) {
+            locale.getConfiguration().set(message.toString(), message.parseList() != null ? message.parseList() : message.parse());
+        }
+        locale.save();
+
+
         ProjectileService projectileService = new ProjectileServiceImpl();
         projectileService.deserialize(this);
 
-        ParticleService particleService = new ParticleServiceImpl();
+        ParticleService particleService = new ParticleServiceImpl(projectileService);
         particleService.deserialize(this);
-        particleService.run(this, projectileService.getProjectileMap());
-
+        particleService.run(this);
 
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new ProjectileListener(this, projectileService), this);
+        ProjectileListener projectileListener = new ProjectileListener(this, projectileService);
+        pluginManager.registerEvents(projectileListener, this);
 
         PluginCommand pluginCommand = getCommand("bouncyball");
         if(pluginCommand != null) pluginCommand.setExecutor(new BouncyBallCommand(projectileService));

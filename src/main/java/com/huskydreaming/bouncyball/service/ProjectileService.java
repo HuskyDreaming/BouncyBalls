@@ -17,7 +17,7 @@ public interface ProjectileService {
 
     void addProjectile(String key, Projectile projectile);
 
-    void launchProjectile(Plugin plugin, Player player, String key);
+    void launchProjectile(Plugin plugin, Player player, ItemStack itemStack, String key);
 
     boolean hasProjectileData(Entity entity);
 

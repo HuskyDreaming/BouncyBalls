@@ -2,7 +2,6 @@ package com.huskydreaming.bouncyball.listeners;
 
 import com.huskydreaming.bouncyball.data.ProjectileData;
 import com.huskydreaming.bouncyball.service.ProjectileService;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -34,12 +33,13 @@ public class ProjectileListener implements Listener {
         ItemStack itemStack = event.getItem();
         if(itemStack == null) return;
 
-        if(itemStack.getType() == Material.SNOWBALL || itemStack.getType() == Material.ENDER_PEARL) {
-            event.setCancelled(true);
-        }
-
         String key = projectileService.getKeyFromItemStack(itemStack);
-        projectileService.launchProjectile(plugin, event.getPlayer(), key);
+        if(key != null) {
+            projectileService.launchProjectile(plugin, event.getPlayer(), itemStack, key);
+            event.setCancelled(true);
+        } else {
+            event.setCancelled(false);
+        }
     }
 
     @EventHandler
