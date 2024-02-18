@@ -189,7 +189,7 @@ public class ProjectileServiceImpl implements ProjectileService {
                 Snowball newProjectile = (Snowball) projectile.getWorld().spawnEntity(projectile.getLocation(), projectile.getType());
                 newProjectile.setItem(new ItemStack(Material.valueOf(projectileData.item())));
                 newProjectile.setVelocity(velocity.subtract(direction).normalize().multiply(speed));
-                newProjectile.setMetadata(key, metadataValue);
+                newProjectile.setMetadata(projectileDataKey, metadataValue);
                 newProjectile.setShooter(projectile.getShooter());
 
                 return newProjectile;
