@@ -1,6 +1,7 @@
-package com.huskydreaming.bouncyball.service;
+package com.huskydreaming.bouncyball.service.interfaces;
 
 import com.huskydreaming.bouncyball.data.ProjectileData;
+import com.huskydreaming.bouncyball.service.base.ServiceInterface;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -9,9 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 
-public interface ProjectileService {
-
-    void deserialize(Plugin plugin);
+public interface ProjectileService extends ServiceInterface {
 
     void removeProjectile(Projectile projectile);
 
@@ -33,7 +32,11 @@ public interface ProjectileService {
 
     void dropProjectile(Projectile projectile);
 
+    void onProjectileEnd(Projectile projectile);
+
     Projectile updateProjectile(Plugin plugin, Projectile projectile);
 
     Map<Projectile, String> getProjectileMap();
+
+    Map<String, ProjectileData> getProjectileDataMap();
 }

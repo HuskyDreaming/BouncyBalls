@@ -1,6 +1,9 @@
-package com.huskydreaming.bouncyball.service;
+package com.huskydreaming.bouncyball.service.implementations;
 
+import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.data.ParticleData;
+import com.huskydreaming.bouncyball.service.interfaces.ProjectileService;
+import com.huskydreaming.bouncyball.service.interfaces.ParticleService;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -22,13 +25,13 @@ public class ParticleServiceImpl implements ParticleService {
     }
 
     @Override
-    public void deserialize(Plugin plugin) {
+    public void deserialize(BouncyBallPlugin plugin) {
         FileConfiguration configuration = plugin.getConfig();
 
         ConfigurationSection section = configuration.getConfigurationSection("");
-        if(section == null) return;
+        if (section == null) return;
 
-        for(String key : section.getKeys(false)) {
+        for (String key : section.getKeys(false)) {
             String path = key + ".particle";
 
             ParticleData particleData = new ParticleData(
@@ -45,9 +48,9 @@ public class ParticleServiceImpl implements ParticleService {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> projectileService.getProjectileMap().forEach((projectile, s) -> {
             Location location = projectile.getLocation();
             World world = location.getWorld();
-            if(world != null) {
+            if (world != null) {
                 ParticleData particleData = particleDataMap.get(s);
-                if(particleData != null) world.spawnParticle(particleData.particle(), location, particleData.count());
+                if (particleData != null) world.spawnParticle(particleData.particle(), location, particleData.count());
             }
         }), 0L, 1L);
     }

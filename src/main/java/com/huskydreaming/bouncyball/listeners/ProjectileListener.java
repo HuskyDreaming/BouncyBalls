@@ -1,7 +1,7 @@
 package com.huskydreaming.bouncyball.listeners;
 
 import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.service.ProjectileService;
+import com.huskydreaming.bouncyball.service.interfaces.ProjectileService;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -28,13 +28,13 @@ public class ProjectileListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if(event.getAction() != Action.RIGHT_CLICK_AIR) return;
+        if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
 
         ItemStack itemStack = event.getItem();
-        if(itemStack == null) return;
+        if (itemStack == null) return;
 
         String key = projectileService.getKeyFromItemStack(itemStack);
-        if(key != null) {
+        if (key != null) {
             projectileService.launchProjectile(plugin, event.getPlayer(), itemStack, key);
             event.setCancelled(true);
         } else {
@@ -44,11 +44,10 @@ public class ProjectileListener implements Listener {
 
     @EventHandler
     public void onBlockEvent(BlockIgniteEvent event) {
-        if(event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
+        if (event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
             Entity entity = event.getIgnitingEntity();
 
-
-            if(entity != null && projectileService.hasProjectileData(entity)) {
+            if (entity != null && projectileService.hasProjectileData(entity)) {
                 event.setCancelled(true);
             }
         }

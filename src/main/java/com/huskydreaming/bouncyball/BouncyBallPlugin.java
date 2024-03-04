@@ -1,11 +1,10 @@
 package com.huskydreaming.bouncyball;
 
-import com.huskydreaming.bouncyball.commands.BouncyBallCommand;
 import com.huskydreaming.bouncyball.listeners.ProjectileListener;
-import com.huskydreaming.bouncyball.service.ParticleService;
-import com.huskydreaming.bouncyball.service.ParticleServiceImpl;
-import com.huskydreaming.bouncyball.service.ProjectileService;
-import com.huskydreaming.bouncyball.service.ProjectileServiceImpl;
+import com.huskydreaming.bouncyball.service.interfaces.ParticleService;
+import com.huskydreaming.bouncyball.service.implementations.ParticleServiceImpl;
+import com.huskydreaming.bouncyball.service.interfaces.ProjectileService;
+import com.huskydreaming.bouncyball.service.implementations.ProjectileServiceImpl;
 import com.huskydreaming.bouncyball.storage.Locale;
 import com.huskydreaming.bouncyball.storage.Yaml;
 import org.bukkit.command.PluginCommand;
@@ -40,6 +39,6 @@ public class BouncyBallPlugin extends JavaPlugin {
         pluginManager.registerEvents(projectileListener, this);
 
         PluginCommand pluginCommand = getCommand("bouncyball");
-        if(pluginCommand != null) pluginCommand.setExecutor(new BouncyBallCommand(projectileService));
+        if (pluginCommand != null) pluginCommand.setExecutor(new BouncyBallCommand(projectileService));
     }
 }

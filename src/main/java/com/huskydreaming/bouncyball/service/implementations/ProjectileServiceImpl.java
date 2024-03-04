@@ -1,6 +1,8 @@
-package com.huskydreaming.bouncyball.service;
+package com.huskydreaming.bouncyball.service.implementations;
 
+import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.data.ProjectileData;
+import com.huskydreaming.bouncyball.service.interfaces.ProjectileService;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +35,13 @@ public class ProjectileServiceImpl implements ProjectileService {
     private final Map<Projectile, String> projectileMap = new HashMap<>();
 
     @Override
-    public void deserialize(Plugin plugin) {
+    public void deserialize(BouncyBallPlugin plugin) {
         projectileNameSpacedKey = new NamespacedKey(plugin, "BOUNCY_BALL");
 
         FileConfiguration configuration = plugin.getConfig();
 
         ConfigurationSection section = configuration.getConfigurationSection("");
-        if(section != null) {
+        if (section != null) {
             for (String key : section.getKeys(false)) {
                 String path = key + ".projectile";
                 ProjectileData projectileData = new ProjectileData(
@@ -71,7 +74,7 @@ public class ProjectileServiceImpl implements ProjectileService {
     public void launchProjectile(Plugin plugin, Player player, ItemStack itemStack, String key) {
         ProjectileData projectileData = projectileDataMap.get(key);
 
-        if(projectileData.removes()) itemStack.setAmount(itemStack.getAmount() - 1);
+        if (projectileData.removes()) itemStack.setAmount(itemStack.getAmount() - 1);
 
         Snowball projectile = player.launchProjectile(Snowball.class);
         PersistentDataContainer persistentDataContainer = projectile.getPersistentDataContainer();
@@ -97,7 +100,7 @@ public class ProjectileServiceImpl implements ProjectileService {
     @Override
     public ProjectileData getDataFromProjectile(Projectile projectile) {
         String key = getKeyFromProjectile(projectile);
-        if(key == null) return null;
+        if (key == null) return null;
 
         return projectileDataMap.get(key);
     }
@@ -105,7 +108,7 @@ public class ProjectileServiceImpl implements ProjectileService {
     @Override
     public String getKeyFromItemStack(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if(itemMeta == null) return null;
+        if (itemMeta == null) return null;
 
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
         return persistentDataContainer.get(projectileNameSpacedKey, PersistentDataType.STRING);
@@ -114,11 +117,11 @@ public class ProjectileServiceImpl implements ProjectileService {
     @Override
     public ItemStack getItemStackFromKey(String key) {
         ProjectileData projectileData = projectileDataMap.get(key);
-        if(projectileData == null) return null;
+        if (projectileData == null) return null;
 
         ItemStack itemStack = new ItemStack(Material.valueOf(projectileData.item()));
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if(itemMeta == null) return null;
+        if (itemMeta == null) return null;
 
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
 
@@ -130,16 +133,16 @@ public class ProjectileServiceImpl implements ProjectileService {
     @Override
     public ItemStack getItemStackFromProjectile(Projectile projectile) {
         ProjectileData projectileData = getDataFromProjectile(projectile);
-        if(projectileData == null) return null;
+        if (projectileData == null) return null;
 
         ItemStack itemStack = new ItemStack(Material.valueOf(projectileData.item()));
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if(itemMeta == null) return null;
+        if (itemMeta == null) return null;
 
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
         String key = getKeyFromProjectile(projectile);
-        if(key == null) return null;
+        if (key == null) return null;
 
         persistentDataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);
 
@@ -150,24 +153,29 @@ public class ProjectileServiceImpl implements ProjectileService {
     @Override
     public void dropProjectile(Projectile projectile) {
         ProjectileData projectileData = getDataFromProjectile(projectile);
-        if(projectileData == null) return;
+        if (projectileData == null) return;
 
-        if(projectileData.drops()) {
+        if (projectileData.drops()) {
 
             Location location = projectile.getLocation();
             World world = location.getWorld();
 
             if (world != null) {
                 ItemStack itemStack = getItemStackFromProjectile(projectile);
-                if(itemStack != null) world.dropItem(location, itemStack);
+                if (itemStack != null) world.dropItem(location, itemStack);
             }
         }
     }
 
     @Override
+    public void onProjectileEnd(Projectile projectile) {
+        // TODO: Projectile end effect
+    }
+
+    @Override
     public Projectile updateProjectile(Plugin plugin, Projectile projectile) {
         ProjectileData projectileData = getDataFromProjectile(projectile);
-        if(projectileData == null) return null;
+        if (projectileData == null) return null;
 
         BlockFace blockFace = getInverseFace(projectile);
 
@@ -193,6 +201,7 @@ public class ProjectileServiceImpl implements ProjectileService {
                 return newProjectile;
             }
 
+            onProjectileEnd(projectile);
             dropProjectile(projectile);
             removeProjectile(projectile);
         }
@@ -201,13 +210,18 @@ public class ProjectileServiceImpl implements ProjectileService {
 
     @Override
     public Map<Projectile, String> getProjectileMap() {
-        return projectileMap;
+        return Collections.unmodifiableMap(projectileMap);
+    }
+
+    @Override
+    public Map<String, ProjectileData> getProjectileDataMap() {
+        return projectileDataMap;
     }
 
     private BlockFace getInverseFace(Projectile projectile) {
         Location location = projectile.getLocation();
         World world = location.getWorld();
-        if(world == null) return null;
+        if (world == null) return null;
 
         Block block = location.getBlock();
         BlockIterator blockIterator = new BlockIterator(world, location.toVector(), projectile.getVelocity(), 0.0D, 3);
@@ -222,6 +236,6 @@ public class ProjectileServiceImpl implements ProjectileService {
 
 
         BlockFace blockFace = nextBlock.getFace(previousBlock);
-        return blockFace == BlockFace.SELF ?  BlockFace.UP : blockFace;
+        return blockFace == BlockFace.SELF ? BlockFace.UP : blockFace;
     }
 }
