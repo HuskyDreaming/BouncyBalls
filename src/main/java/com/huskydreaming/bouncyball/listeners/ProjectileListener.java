@@ -1,7 +1,9 @@
 package com.huskydreaming.bouncyball.listeners;
 
+import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.service.interfaces.ProjectileService;
+import com.huskydreaming.bouncyball.data.ProjectileSetting;
+import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -18,27 +20,34 @@ import org.bukkit.plugin.Plugin;
 public class ProjectileListener implements Listener {
 
     private final Plugin plugin;
-
     private final ProjectileService projectileService;
 
-    public ProjectileListener(Plugin plugin, ProjectileService projectileService) {
+    public ProjectileListener(BouncyBallPlugin plugin) {
         this.plugin = plugin;
-        this.projectileService = projectileService;
+        this.projectileService = plugin.provide(ProjectileService.class);
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_AIR) return;
+        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+            ItemStack itemStack = event.getItem();
+            if (itemStack == null) return;
 
-        ItemStack itemStack = event.getItem();
-        if (itemStack == null) return;
+            String key = projectileService.getKeyFromItemStack(itemStack);
+            if (key != null) {
+                projectileService.launchProjectile(plugin, event.getPlayer(), itemStack, key);
+                event.setCancelled(true);
+            } else {
+                event.setCancelled(false);
+            }
+        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack itemStack = event.getItem();
+            if (itemStack == null) return;
 
-        String key = projectileService.getKeyFromItemStack(itemStack);
-        if (key != null) {
-            projectileService.launchProjectile(plugin, event.getPlayer(), itemStack, key);
-            event.setCancelled(true);
-        } else {
-            event.setCancelled(false);
+            String key = projectileService.getKeyFromItemStack(itemStack);
+            if (key != null) {
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -63,7 +72,7 @@ public class ProjectileListener implements Listener {
 
             if (event.getHitEntity() instanceof Player player) {
 
-                if (projectileData.returns()) {
+                if (projectileData.getSettings().contains(ProjectileSetting.RETURNS)) {
 
                     ItemStack itemStack = projectileService.getItemStackFromProjectile(snowball);
                     if (itemStack == null) return;

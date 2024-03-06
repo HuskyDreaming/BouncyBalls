@@ -1,7 +1,7 @@
-package com.huskydreaming.bouncyball.service.interfaces;
+package com.huskydreaming.bouncyball.services.interfaces;
 
 import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.service.base.ServiceInterface;
+import com.huskydreaming.bouncyball.services.base.ServiceInterface;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -16,6 +16,12 @@ public interface ProjectileService extends ServiceInterface {
 
     void addProjectile(String key, Projectile projectile);
 
+    void addProjectile(String key, ProjectileData projectileData);
+
+    void removeProjectile(String key);
+
+    boolean containKey(String key);
+
     void launchProjectile(Plugin plugin, Player player, ItemStack itemStack, String key);
 
     boolean hasProjectileData(Entity entity);
@@ -23,6 +29,8 @@ public interface ProjectileService extends ServiceInterface {
     String getKeyFromProjectile(Projectile projectile);
 
     ProjectileData getDataFromProjectile(Projectile projectile);
+
+    ProjectileData getDataFromKey(String key);
 
     String getKeyFromItemStack(ItemStack itemStack);
 

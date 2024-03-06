@@ -1,4 +1,4 @@
-package com.huskydreaming.bouncyball.service.base;
+package com.huskydreaming.bouncyball.services.base;
 
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
 

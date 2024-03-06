@@ -1,44 +1,40 @@
 package com.huskydreaming.bouncyball;
 
-import com.huskydreaming.bouncyball.listeners.ProjectileListener;
-import com.huskydreaming.bouncyball.service.interfaces.ParticleService;
-import com.huskydreaming.bouncyball.service.implementations.ParticleServiceImpl;
-import com.huskydreaming.bouncyball.service.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.service.implementations.ProjectileServiceImpl;
-import com.huskydreaming.bouncyball.storage.Locale;
-import com.huskydreaming.bouncyball.storage.Yaml;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.plugin.PluginManager;
+import com.huskydreaming.bouncyball.registries.CommandRegistry;
+import com.huskydreaming.bouncyball.registries.ListenerRegistry;
+import com.huskydreaming.bouncyball.registries.ServiceRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public class BouncyBallPlugin extends JavaPlugin {
 
+    private ServiceRegistry serviceRegistry;
+    private CommandRegistry commandRegistry;
+
     @Override
     public void onEnable() {
-        saveDefaultConfig();
 
-        Yaml locale = new Yaml("locale");
-        locale.load(this);
-        Locale.setConfiguration(locale.getConfiguration());
+        serviceRegistry = new ServiceRegistry();
+        serviceRegistry.register(this);
 
-        for (Locale message : Locale.values()) {
-            locale.getConfiguration().set(message.toString(), message.parseList() != null ? message.parseList() : message.parse());
-        }
-        locale.save();
+        commandRegistry = new CommandRegistry();
+        commandRegistry.register(this);
 
+        ListenerRegistry listenerRegistry = new ListenerRegistry();
+        listenerRegistry.register(this);
+    }
 
-        ProjectileService projectileService = new ProjectileServiceImpl();
-        projectileService.deserialize(this);
+    @Override
+    public void onDisable() {
+        serviceRegistry.unregister(this);
+    }
 
-        ParticleService particleService = new ParticleServiceImpl(projectileService);
-        particleService.deserialize(this);
-        particleService.run(this);
+    @NotNull
+    public <T> T provide(Class<T> tClass) {
+        return tClass.cast(serviceRegistry.getServices().get(tClass));
+    }
 
-        PluginManager pluginManager = getServer().getPluginManager();
-        ProjectileListener projectileListener = new ProjectileListener(this, projectileService);
-        pluginManager.registerEvents(projectileListener, this);
-
-        PluginCommand pluginCommand = getCommand("bouncyball");
-        if (pluginCommand != null) pluginCommand.setExecutor(new BouncyBallCommand(projectileService));
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
     }
 }

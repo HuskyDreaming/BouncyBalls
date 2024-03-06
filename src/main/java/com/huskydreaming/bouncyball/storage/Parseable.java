@@ -1,7 +1,8 @@
 package com.huskydreaming.bouncyball.storage;
 
-import org.bukkit.ChatColor;
+import com.huskydreaming.bouncyball.utilities.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface Parseable {
@@ -11,21 +12,27 @@ public interface Parseable {
     List<String> parseList();
 
     default String prefix(Object... objects) {
-        String string = parse();
-        for (int i = 0; i < objects.length; i++) {
-            String parameter = (objects[i] instanceof String stringObject) ? stringObject : String.valueOf(objects[i]);
-            if (string != null) string = string.replace("{" + i + "}", parameter);
-        }
-        return ChatColor.translateAlternateColorCodes('&', Locale.PREFIX.parse() + string);
+        return Locale.PREFIX.parse() + parameterize(objects);
     }
 
     default String parameterize(Object... objects) {
         String string = parse();
-        if(string == null) return null;
         for (int i = 0; i < objects.length; i++) {
             String parameter = (objects[i] instanceof String stringObject) ? stringObject : String.valueOf(objects[i]);
-            string = string.replace("{" + i + "}", parameter);
+            string = string.replace("{" + i + "}", Util.capitalize(parameter.replace("_", " ")));
         }
-        return ChatColor.translateAlternateColorCodes('&', string);
+
+        return string;
+    }
+
+    default List<String> parameterizeList(Object... objects) {
+        List<String> parameterList = new ArrayList<>();
+        for (String string : parseList()) {
+            for (int i = 0; i < objects.length; i++) {
+                string = string.replace("{" + i + "}", String.valueOf(objects[i]));
+            }
+            parameterList.add(string);
+        }
+        return parameterList;
     }
 }
