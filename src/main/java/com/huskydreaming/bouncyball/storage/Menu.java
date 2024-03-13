@@ -1,7 +1,6 @@
 package com.huskydreaming.bouncyball.storage;
 
 import com.google.common.base.Functions;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +33,9 @@ public enum Menu implements Parseable {
     PROJECTILE_EDIT("&7Right-Click to edit"),
 
     // EDIT MENU
+
+    EDIT_COLOR_TITLE("{0}{1}"),
+    EDIT_COLOR_LORE(Collections.singletonList("&7Click to select color")),
     EDIT_DELETE_TITLE("&cDelete"),
     EDIT_DELETE_LORE(Collections.singletonList("&7Click to delete bouncy ball")),
     EDIT_MATERIAL_TITLE("&eEdit Materials"),

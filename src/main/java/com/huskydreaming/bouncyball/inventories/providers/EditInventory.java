@@ -86,7 +86,13 @@ public class EditInventory implements InventoryProvider {
         return ClickableItem.of(itemStack, e -> {
             if (e.getWhoClicked() instanceof Player player) {
                 projectileService.removeProjectile(key);
-                inventoryService.getBouncyBallsInventory(plugin).open(player);
+
+                if(projectileService.getProjectileDataMap().isEmpty()) {
+                    player.closeInventory();
+                } else {
+                    inventoryService.getBouncyBallsInventory(plugin).open(player);
+                }
+
             }
         });
     }

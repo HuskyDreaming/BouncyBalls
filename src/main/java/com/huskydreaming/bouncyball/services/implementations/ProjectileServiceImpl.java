@@ -3,12 +3,13 @@ package com.huskydreaming.bouncyball.services.implementations;
 import com.google.common.reflect.TypeToken;
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.data.ProjectileData;
+import com.huskydreaming.bouncyball.data.ProjectileDefault;
 import com.huskydreaming.bouncyball.data.ProjectilePhysics;
 import com.huskydreaming.bouncyball.data.ProjectileSetting;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import com.huskydreaming.bouncyball.storage.Json;
+import com.huskydreaming.bouncyball.utilities.Util;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -16,7 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Type;
@@ -35,13 +35,19 @@ public class ProjectileServiceImpl implements ProjectileService {
     @Override
     public void deserialize(BouncyBallPlugin plugin) {
         projectileNameSpacedKey = new NamespacedKey(plugin, "BOUNCY_BALL");
-        Type type = new TypeToken<Map<String, ProjectileData>>() {
-        }.getType();
+        Type type = new TypeToken<Map<String, ProjectileData>>() {}.getType();
         projectileDataMap = Json.read(plugin, "data/projectiles", type);
 
         if (projectileDataMap == null) {
             projectileDataMap = new ConcurrentHashMap<>();
-            addExamples();
+
+            for(ProjectileDefault projectileDefault : ProjectileDefault.values()) {
+                if(projectileDefault == ProjectileDefault.DEFAULT) continue;
+                String[] strings = projectileDefault.name().toLowerCase().split("_");
+                String string = Util.capitalize(String.join("_", strings));
+
+                projectileDataMap.put(string, projectileDefault.getProjectileData());
+            }
         }
     }
 
@@ -200,7 +206,7 @@ public class ProjectileServiceImpl implements ProjectileService {
         ProjectileData projectileData = getDataFromProjectile(projectile);
         if (projectileData == null) return null;
 
-        BlockFace blockFace = getInverseFace(projectile);
+        BlockFace blockFace = Util.getInverseFace(projectile);
 
         if (blockFace != null) {
             Vector velocity = projectile.getVelocity();
@@ -240,96 +246,5 @@ public class ProjectileServiceImpl implements ProjectileService {
     @Override
     public Map<String, ProjectileData> getProjectileDataMap() {
         return projectileDataMap;
-    }
-
-    private BlockFace getInverseFace(Projectile projectile) {
-        Location location = projectile.getLocation();
-        World world = location.getWorld();
-        if (world == null) return null;
-
-        Block block = location.getBlock();
-        BlockIterator blockIterator = new BlockIterator(world, location.toVector(), projectile.getVelocity(), 0.0D, 3);
-
-        Block previousBlock = block;
-        Block nextBlock = blockIterator.next();
-
-        while (blockIterator.hasNext() && (nextBlock.getType() == Material.AIR || nextBlock.isLiquid() || nextBlock.equals(block))) {
-            previousBlock = nextBlock;
-            nextBlock = blockIterator.next();
-        }
-
-
-        BlockFace blockFace = nextBlock.getFace(previousBlock);
-        return blockFace == BlockFace.SELF ? BlockFace.UP : blockFace;
-    }
-
-    private void addExamples() {
-        // Snowball
-        ProjectileData snowballData = new ProjectileData();
-        snowballData.setMaterial(Material.SNOWBALL);
-        snowballData.addSetting(ProjectileSetting.REMOVES);
-        snowballData.addSetting(ProjectileSetting.RETURNS);
-        snowballData.addSetting(ProjectileSetting.DROPS);
-        snowballData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
-        snowballData.setPhysics(ProjectilePhysics.THRESHOLD, 0.25D);
-        snowballData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
-        projectileDataMap.put("Snow_Ball", snowballData);
-
-        // Turtle Egg
-        ProjectileData turtleData = new ProjectileData();
-        turtleData.setMaterial(Material.TURTLE_EGG);
-        turtleData.addSetting(ProjectileSetting.REMOVES);
-        turtleData.addSetting(ProjectileSetting.DROPS);
-        turtleData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
-        turtleData.setPhysics(ProjectilePhysics.THRESHOLD, 0.35D);
-        turtleData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
-        projectileDataMap.put("Turtle_Egg", turtleData);
-
-        //Hot Potato
-        ProjectileData hotPotatoData = new ProjectileData();
-        hotPotatoData.setMaterial(Material.BAKED_POTATO);
-        hotPotatoData.addSetting(ProjectileSetting.REMOVES);
-        hotPotatoData.addSetting(ProjectileSetting.RETURNS);
-        hotPotatoData.addSetting(ProjectileSetting.DROPS);
-        hotPotatoData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 0.8D);
-        hotPotatoData.setPhysics(ProjectilePhysics.THRESHOLD, 0.20D);
-        hotPotatoData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
-        projectileDataMap.put("Hot_Potato", hotPotatoData);
-
-        //SpaceEgg
-        ProjectileData spaceEggData = new ProjectileData();
-        spaceEggData.setMaterial(Material.ALLAY_SPAWN_EGG);
-        spaceEggData.addSetting(ProjectileSetting.REMOVES);
-        spaceEggData.addSetting(ProjectileSetting.GLOWS);
-        spaceEggData.addSetting(ProjectileSetting.ITEM_NAME);
-        spaceEggData.addSetting(ProjectileSetting.DROPS);
-        spaceEggData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.2D);
-        spaceEggData.setPhysics(ProjectilePhysics.THRESHOLD, 0.20D);
-        spaceEggData.setPhysics(ProjectilePhysics.DAMPING, 0.90D);
-        projectileDataMap.put("Space_Egg", spaceEggData);
-
-
-        //NewtonsApple
-        ProjectileData newtonsAppleData = new ProjectileData();
-        newtonsAppleData.setMaterial(Material.APPLE);
-        newtonsAppleData.addSetting(ProjectileSetting.REMOVES);
-        newtonsAppleData.addSetting(ProjectileSetting.RETURNS);
-        newtonsAppleData.addSetting(ProjectileSetting.DROPS);
-        newtonsAppleData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.5D);
-        newtonsAppleData.setPhysics(ProjectilePhysics.THRESHOLD, 0.15D);
-        newtonsAppleData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
-        projectileDataMap.put("Newtons_Apple", newtonsAppleData);
-
-        //GroovyJukebox
-        ProjectileData groovyJukeBoxData = new ProjectileData();
-        groovyJukeBoxData.setMaterial(Material.JUKEBOX);
-        groovyJukeBoxData.addSetting(ProjectileSetting.REMOVES);
-        groovyJukeBoxData.addSetting(ProjectileSetting.RETURNS);
-        groovyJukeBoxData.addSetting(ProjectileSetting.DROPS);
-        groovyJukeBoxData.addSetting(ProjectileSetting.GLOWS);
-        groovyJukeBoxData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
-        groovyJukeBoxData.setPhysics(ProjectilePhysics.THRESHOLD, 0.20D);
-        groovyJukeBoxData.setPhysics(ProjectilePhysics.DAMPING, 0.45D);
-        projectileDataMap.put("Groovy_Jukebox", groovyJukeBoxData);
     }
 }

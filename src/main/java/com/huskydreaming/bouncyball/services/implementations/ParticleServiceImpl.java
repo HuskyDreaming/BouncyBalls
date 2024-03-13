@@ -3,9 +3,11 @@ package com.huskydreaming.bouncyball.services.implementations;
 import com.google.common.reflect.TypeToken;
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.data.ParticleData;
+import com.huskydreaming.bouncyball.data.ProjectileDefault;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
 import com.huskydreaming.bouncyball.storage.Json;
+import com.huskydreaming.bouncyball.utilities.Util;
 import org.bukkit.*;
 
 import java.lang.reflect.Type;
@@ -18,18 +20,31 @@ public class ParticleServiceImpl implements ParticleService {
     private Map<String, ParticleData> particleDataMap = new HashMap<>();
     private final ProjectileService projectileService;
 
+    @Override
+    public void deserialize(BouncyBallPlugin plugin) {
+        Type type = new TypeToken<Map<String, ParticleData>>(){}.getType();
+        particleDataMap = Json.read(plugin, "data/particles", type);
+
+        if(particleDataMap == null) {
+            particleDataMap = new ConcurrentHashMap<>();
+
+            for(ProjectileDefault projectileDefault : ProjectileDefault.values()) {
+                if(projectileDefault == ProjectileDefault.DEFAULT) continue;
+                String[] strings = projectileDefault.name().toLowerCase().split("_");
+                String string = Util.capitalize(String.join("_", strings));
+
+                particleDataMap.put(string, projectileDefault.getParticleData());
+            }
+        }
+    }
+
+    @Override
+    public void serialize(BouncyBallPlugin plugin) {
+        Json.write(plugin, "data/particles", particleDataMap);
+    }
+
     public ParticleServiceImpl(BouncyBallPlugin plugin) {
         this.projectileService = plugin.provide(ProjectileService.class);
-    }
-
-    @Override
-    public void update(String name, ParticleData particleData) {
-        particleDataMap.put(name, particleData);
-    }
-
-    @Override
-    public ParticleData getParticle(String key) {
-        return particleDataMap.get(key);
     }
 
     @Override
@@ -38,43 +53,26 @@ public class ParticleServiceImpl implements ParticleService {
     }
 
     @Override
-    public void deserialize(BouncyBallPlugin plugin) {
-        Type type = new TypeToken<Map<String, ParticleData>>(){}.getType();
-        particleDataMap = Json.read(plugin, "data/particles", type);
-        if(particleDataMap == null) {
-            particleDataMap = new ConcurrentHashMap<>();
-            addExamples();
-        }
+    public ParticleData getParticle(String key) {
+        return particleDataMap.get(key);
+    }
 
+    @Override
+    public void run(BouncyBallPlugin plugin) {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> projectileService.getProjectileMap().forEach((projectile, s) -> {
             Location location = projectile.getLocation();
             World world = location.getWorld();
             if (world != null) {
                 ParticleData particleData = particleDataMap.get(s);
                 if (particleData != null) {
-                    if(particleData.particle() == Particle.REDSTONE) {
-                        // TODO: Add customisation for particle colors
-                        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.RED, 1);
-                        world.spawnParticle(particleData.particle(), location, particleData.count(), dustOptions);
+                    if(particleData.getParticle() == Particle.REDSTONE) {
+                        Particle.DustOptions dustOptions = new Particle.DustOptions(particleData.getColor(), 1);
+                        world.spawnParticle(particleData.getParticle(), location, particleData.getCount(), dustOptions);
                     } else {
-                        world.spawnParticle(particleData.particle(), location, particleData.count());
+                        world.spawnParticle(particleData.getParticle(), location, particleData.getCount());
                     }
                 }
             }
         }), 0L, 1L);
-    }
-
-    @Override
-    public void serialize(BouncyBallPlugin plugin) {
-        Json.write(plugin, "data/particles", particleDataMap);
-    }
-
-    private void addExamples() {
-        particleDataMap.put("Snow_Ball", new ParticleData(Particle.SNOW_SHOVEL, 2));
-        particleDataMap.put("Turtle_Egg", new ParticleData(Particle.GLOW, 2));
-        particleDataMap.put("Hot_Potato", new ParticleData(Particle.LAVA, 2));
-        particleDataMap.put("Space_Egg", new ParticleData(Particle.WAX_OFF, 2));
-        particleDataMap.put("Newtons_Apple", new ParticleData(Particle.FALLING_LAVA, 2));
-        particleDataMap.put("Groovy_Jukebox", new ParticleData(Particle.NOTE, 2));
     }
 }

@@ -34,7 +34,7 @@ public class ParticleInventory extends InventoryPageProvider<Particle> {
     @Override
     public ItemStack construct(Player player, int index, Particle particle) {
         ParticleData particleData = particleService.getParticle(key);
-        boolean isParticle = particleData.particle().name().equals(particle.name());
+        boolean isParticle = particleData.getParticle().name().equals(particle.name());
 
         Menu title = isParticle ? Menu.EDIT_CURRENT_PARTICLE_TITLE : Menu.EDIT_SET_PARTICLE_TITLE;
         Menu lore = isParticle ? Menu.EDIT_CURRENT_PARTICLE_LORE : Menu.EDIT_SET_PARTICLE_LORE;
@@ -50,8 +50,12 @@ public class ParticleInventory extends InventoryPageProvider<Particle> {
     @Override
     public void run(InventoryClickEvent event, Particle particle, InventoryContents contents) {
         if (event.getWhoClicked() instanceof Player player) {
-            particleService.update(key, new ParticleData(particle, 1));
-            inventoryService.getEditInventory(plugin, key).open(player);
+            particleService.getParticle(key).setParticle(particle);
+            if (particle == Particle.REDSTONE) {
+                inventoryService.getColorInventory(plugin, key).open(player);
+            } else {
+                smartInventory.open(player);
+            }
         }
     }
 }

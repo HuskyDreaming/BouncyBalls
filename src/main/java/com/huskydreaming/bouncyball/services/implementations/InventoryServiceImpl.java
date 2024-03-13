@@ -1,12 +1,11 @@
 package com.huskydreaming.bouncyball.services.implementations;
 
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.inventories.providers.EditInventory;
-import com.huskydreaming.bouncyball.inventories.providers.MainInventory;
-import com.huskydreaming.bouncyball.inventories.providers.MaterialInventory;
-import com.huskydreaming.bouncyball.inventories.providers.ParticleInventory;
+import com.huskydreaming.bouncyball.data.ParticleColor;
+import com.huskydreaming.bouncyball.inventories.providers.*;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
+import com.huskydreaming.bouncyball.utilities.Util;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
 import org.bukkit.Material;
@@ -37,12 +36,13 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public SmartInventory getEditInventory(BouncyBallPlugin plugin, String key) {
         EditInventory mainInventory = new EditInventory(plugin, key);
+        String name =  Util.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("editInventory")
                 .size(4, 9)
                 .provider(mainInventory)
-                .title("Editing: " + key)
+                .title("Editing: " + name)
                 .build();
     }
 
@@ -57,12 +57,13 @@ public class InventoryServiceImpl implements InventoryService {
 
         int rows = (int) Math.ceil((double) supportedMaterials.length / 9);
         MaterialInventory mainInventory = new MaterialInventory(plugin, key, rows, supportedMaterials);
+        String name =  Util.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("materialInventory")
                 .size(Math.min(rows + 2, 5), 9)
                 .provider(mainInventory)
-                .title("Editing Materials: " + key)
+                .title("Materials: " + name)
                 .build();
     }
 
@@ -72,12 +73,28 @@ public class InventoryServiceImpl implements InventoryService {
         int rows = (int) Math.ceil((double) particles.length / 9);
 
         ParticleInventory particleInventory = new ParticleInventory(plugin, key, rows, particles);
+        String name =  Util.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("particleInventory")
                 .size(Math.min(rows + 2, 5), 9)
                 .provider(particleInventory)
-                .title("Editing Particles: " + key)
+                .title("Particles: " + name)
+                .build();
+    }
+
+    @Override
+    public SmartInventory getColorInventory(BouncyBallPlugin plugin, String key) {
+        ParticleColor[] particleColors = ParticleColor.values();
+        int rows = (int) Math.ceil((double) particleColors.length / 9);
+
+        ColorInventory colorInventory = new ColorInventory(plugin, key, rows, particleColors);
+        return SmartInventory.builder()
+                .manager(inventoryManager)
+                .id("colorInventory")
+                .size(Math.min(rows + 2, 5), 9)
+                .provider(colorInventory)
+                .title("Particle Color")
                 .build();
     }
 

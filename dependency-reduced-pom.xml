@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.huskydreaming</groupId>
   <artifactId>Bouncyballs</artifactId>
-  <version>6.0-RELEASE</version>
+  <version>6.1-RELEASE</version>
   <build>
     <plugins>
       <plugin>

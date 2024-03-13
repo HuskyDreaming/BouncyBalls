@@ -4,17 +4,11 @@ import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.commands.base.Command;
 import com.huskydreaming.bouncyball.commands.base.CommandInterface;
 import com.huskydreaming.bouncyball.commands.base.CommandLabel;
-import com.huskydreaming.bouncyball.data.ParticleData;
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.data.ProjectilePhysics;
-import com.huskydreaming.bouncyball.data.ProjectileSetting;
+import com.huskydreaming.bouncyball.data.*;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import com.huskydreaming.bouncyball.storage.Locale;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -35,23 +29,15 @@ public class CreateCommand implements CommandInterface {
     @Override
     public void run(Player player, String[] strings) {
         if (strings.length == 2) {
-            String string = strings[1];
-            if(projectileService.containKey(string)) {
+            String string = strings[1].toLowerCase();
+            if (projectileService.containKey(string.toLowerCase())) {
                 player.sendMessage(Locale.BOUNCY_BALL_EXISTS.prefix(string));
                 return;
             }
 
-            ProjectileData projectileData = new ProjectileData();
-            projectileData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
-            projectileData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
-            projectileData.setPhysics(ProjectilePhysics.THRESHOLD, 0.8D);
-            projectileData.addSetting(ProjectileSetting.DROPS);
-            projectileData.addSetting(ProjectileSetting.REMOVES);
-            projectileData.addSetting(ProjectileSetting.RETURNS);
-            projectileData.setMaterial(Material.SNOWBALL);
-
-            particleService.addParticle(string, new ParticleData(Particle.VILLAGER_HAPPY, 2));
-            projectileService.addProjectile(string, projectileData);
+            ProjectileDefault projectileDefault = ProjectileDefault.DEFAULT;
+            particleService.addParticle(string, projectileDefault.getParticleData());
+            projectileService.addProjectile(string, projectileDefault.getProjectileData());
 
             player.sendMessage(Locale.BOUNCY_BALL_CREATE.prefix(string));
         }
