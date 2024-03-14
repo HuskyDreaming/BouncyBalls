@@ -7,7 +7,7 @@ import com.huskydreaming.bouncyball.commands.base.CommandLabel;
 import com.huskydreaming.bouncyball.services.interfaces.LocaleService;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.Locale;
+import com.huskydreaming.bouncyball.storage.enumeration.Locale;
 import org.bukkit.entity.Player;
 
 import java.util.List;

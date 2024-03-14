@@ -1,7 +1,7 @@
 package com.huskydreaming.bouncyball.services.interfaces;
 
 import com.huskydreaming.bouncyball.services.base.ServiceInterface;
-import com.huskydreaming.bouncyball.storage.Yaml;
+import com.huskydreaming.bouncyball.storage.base.Yaml;
 
 public interface LocaleService extends ServiceInterface {
 

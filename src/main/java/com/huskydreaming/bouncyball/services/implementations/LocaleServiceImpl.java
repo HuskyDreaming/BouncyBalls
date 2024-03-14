@@ -2,9 +2,9 @@ package com.huskydreaming.bouncyball.services.implementations;
 
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.services.interfaces.LocaleService;
-import com.huskydreaming.bouncyball.storage.Locale;
-import com.huskydreaming.bouncyball.storage.Menu;
-import com.huskydreaming.bouncyball.storage.Yaml;
+import com.huskydreaming.bouncyball.storage.enumeration.Locale;
+import com.huskydreaming.bouncyball.storage.enumeration.Menu;
+import com.huskydreaming.bouncyball.storage.base.Yaml;
 
 public class LocaleServiceImpl implements LocaleService {
 

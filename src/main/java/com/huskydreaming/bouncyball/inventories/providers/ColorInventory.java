@@ -6,7 +6,7 @@ import com.huskydreaming.bouncyball.data.ParticleData;
 import com.huskydreaming.bouncyball.inventories.base.InventoryPageProvider;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
-import com.huskydreaming.bouncyball.storage.Menu;
+import com.huskydreaming.bouncyball.storage.enumeration.Menu;
 import com.huskydreaming.bouncyball.utilities.ItemBuilder;
 import fr.minuskube.inv.content.InventoryContents;
 import org.bukkit.entity.Player;

@@ -1,5 +1,6 @@
-package com.huskydreaming.bouncyball.storage;
+package com.huskydreaming.bouncyball.storage.base;
 
+import com.huskydreaming.bouncyball.storage.enumeration.Extension;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;

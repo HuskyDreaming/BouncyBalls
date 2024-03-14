@@ -7,7 +7,7 @@ import com.huskydreaming.bouncyball.data.ProjectileSetting;
 import com.huskydreaming.bouncyball.inventories.base.InventoryItem;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.Menu;
+import com.huskydreaming.bouncyball.storage.enumeration.Menu;
 import com.huskydreaming.bouncyball.utilities.ItemBuilder;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.content.InventoryContents;

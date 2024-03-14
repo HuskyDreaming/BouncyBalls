@@ -1,6 +1,7 @@
-package com.huskydreaming.bouncyball.storage;
+package com.huskydreaming.bouncyball.storage.enumeration;
 
 public enum Extension {
+    JSON(".json"),
     YAML(".yml");
 
     private final String string;

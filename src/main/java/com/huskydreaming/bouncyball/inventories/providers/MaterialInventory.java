@@ -5,7 +5,7 @@ import com.huskydreaming.bouncyball.data.ProjectileData;
 import com.huskydreaming.bouncyball.inventories.base.InventoryPageProvider;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.Menu;
+import com.huskydreaming.bouncyball.storage.enumeration.Menu;
 import com.huskydreaming.bouncyball.utilities.ItemBuilder;
 import fr.minuskube.inv.content.InventoryContents;
 import org.bukkit.Material;
@@ -52,6 +52,7 @@ public class MaterialInventory extends InventoryPageProvider<Material> {
         if (event.getWhoClicked() instanceof Player player) {
             ProjectileData projectileData = projectileService.getDataFromKey(key);
             if (projectileData.getMaterial() == material) return;
+
             projectileData.setMaterial(material);
             inventoryService.getEditInventory(plugin, key).open(player);
         }

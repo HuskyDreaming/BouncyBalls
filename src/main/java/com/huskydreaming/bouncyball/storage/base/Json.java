@@ -1,8 +1,9 @@
-package com.huskydreaming.bouncyball.storage;
+package com.huskydreaming.bouncyball.storage.base;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.huskydreaming.bouncyball.storage.enumeration.Extension;
 import org.bukkit.plugin.Plugin;
 
 import java.io.BufferedReader;
@@ -54,7 +55,7 @@ public class Json {
         }
 
         String dataFolder = plugin.getDataFolder() + File.separator;
-        Path path = Paths.get(dataFolder + fileName + ".json");
+        Path path = Paths.get(dataFolder + fileName + Extension.JSON);
         try {
             if (!Files.exists(plugin.getDataFolder().toPath())) {
                 Files.createDirectories(plugin.getDataFolder().toPath());

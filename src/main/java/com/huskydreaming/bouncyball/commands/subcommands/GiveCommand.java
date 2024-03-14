@@ -5,7 +5,7 @@ import com.huskydreaming.bouncyball.commands.base.Command;
 import com.huskydreaming.bouncyball.commands.base.CommandInterface;
 import com.huskydreaming.bouncyball.commands.base.CommandLabel;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.Locale;
+import com.huskydreaming.bouncyball.storage.enumeration.Locale;
 import com.huskydreaming.bouncyball.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,7 +22,6 @@ public class GiveCommand implements CommandInterface {
     public GiveCommand(BouncyBallPlugin plugin) {
         this.projectileService = plugin.provide(ProjectileService.class);
     }
-
 
     @Override
     public void run(Player player, String[] strings) {

@@ -1,6 +1,7 @@
-package com.huskydreaming.bouncyball.storage;
+package com.huskydreaming.bouncyball.storage.enumeration;
 
 import com.google.common.base.Functions;
+import com.huskydreaming.bouncyball.storage.base.Parseable;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +34,9 @@ public enum Menu implements Parseable {
     PROJECTILE_EDIT("&7Right-Click to edit"),
 
     // EDIT MENU
+
+    EDIT_AMOUNT_TITLE("&cAmount: &b{0}"),
+    EDIT_AMOUNT_LORE(List.of("", "&7Left-Click to increase", "&7Right-Click to decrease")),
 
     EDIT_COLOR_TITLE("{0}{1}"),
     EDIT_COLOR_LORE(Collections.singletonList("&7Click to select color")),

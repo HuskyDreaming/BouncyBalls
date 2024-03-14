@@ -1,5 +1,6 @@
-package com.huskydreaming.bouncyball.storage;
+package com.huskydreaming.bouncyball.storage.base;
 
+import com.huskydreaming.bouncyball.storage.enumeration.Locale;
 import com.huskydreaming.bouncyball.utilities.Util;
 
 import java.util.ArrayList;

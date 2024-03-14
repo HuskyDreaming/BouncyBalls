@@ -1,5 +1,6 @@
-package com.huskydreaming.bouncyball.storage;
+package com.huskydreaming.bouncyball.storage.enumeration;
 import com.google.common.base.Functions;
+import com.huskydreaming.bouncyball.storage.base.Parseable;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;

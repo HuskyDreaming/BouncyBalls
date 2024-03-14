@@ -10,6 +10,7 @@ public enum ParticleColor {
     YELLOW(ChatColor.YELLOW, Color.YELLOW, Material.YELLOW_DYE),
     GREEN(ChatColor.GREEN, Color.LIME, Material.LIME_DYE),
     AQUA(ChatColor.AQUA, Color.AQUA, Material.LIGHT_BLUE_DYE),
+    CYAN(ChatColor.DARK_AQUA, Color.TEAL, Material.CYAN_DYE),
     BLUE(ChatColor.BLUE, Color.BLUE, Material.BLUE_DYE),
     PURPLE(ChatColor.LIGHT_PURPLE, Color.PURPLE, Material.PURPLE_DYE),
     WHITE(ChatColor.WHITE, Color.WHITE, Material.WHITE_DYE),

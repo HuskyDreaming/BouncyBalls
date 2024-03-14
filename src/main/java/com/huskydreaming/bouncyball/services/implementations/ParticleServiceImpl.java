@@ -6,7 +6,7 @@ import com.huskydreaming.bouncyball.data.ParticleData;
 import com.huskydreaming.bouncyball.data.ProjectileDefault;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
-import com.huskydreaming.bouncyball.storage.Json;
+import com.huskydreaming.bouncyball.storage.base.Json;
 import com.huskydreaming.bouncyball.utilities.Util;
 import org.bukkit.*;
 
@@ -22,20 +22,20 @@ public class ParticleServiceImpl implements ParticleService {
 
     @Override
     public void deserialize(BouncyBallPlugin plugin) {
-        Type type = new TypeToken<Map<String, ParticleData>>(){}.getType();
+        Type type = new TypeToken<Map<String, ParticleData>>() {}.getType();
         particleDataMap = Json.read(plugin, "data/particles", type);
 
-        if(particleDataMap == null) {
-            particleDataMap = new ConcurrentHashMap<>();
+        if (particleDataMap != null) return;
+        particleDataMap = new ConcurrentHashMap<>();
 
-            for(ProjectileDefault projectileDefault : ProjectileDefault.values()) {
-                if(projectileDefault == ProjectileDefault.DEFAULT) continue;
-                String[] strings = projectileDefault.name().toLowerCase().split("_");
-                String string = Util.capitalize(String.join("_", strings));
+        for (ProjectileDefault projectileDefault : ProjectileDefault.values()) {
+            if (projectileDefault == ProjectileDefault.DEFAULT) continue;
+            String[] strings = projectileDefault.name().toLowerCase().split("_");
+            String string = Util.capitalize(String.join("_", strings));
 
-                particleDataMap.put(string, projectileDefault.getParticleData());
-            }
+            particleDataMap.put(string, projectileDefault.getParticleData());
         }
+
     }
 
     @Override
@@ -62,16 +62,16 @@ public class ParticleServiceImpl implements ParticleService {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> projectileService.getProjectileMap().forEach((projectile, s) -> {
             Location location = projectile.getLocation();
             World world = location.getWorld();
-            if (world != null) {
-                ParticleData particleData = particleDataMap.get(s);
-                if (particleData != null) {
-                    if(particleData.getParticle() == Particle.REDSTONE) {
-                        Particle.DustOptions dustOptions = new Particle.DustOptions(particleData.getColor(), 1);
-                        world.spawnParticle(particleData.getParticle(), location, particleData.getCount(), dustOptions);
-                    } else {
-                        world.spawnParticle(particleData.getParticle(), location, particleData.getCount());
-                    }
-                }
+            if (world == null) return;
+
+            ParticleData particleData = particleDataMap.get(s);
+            if (particleData == null) return;
+
+            if (particleData.getParticle() == Particle.REDSTONE) {
+                Particle.DustOptions dustOptions = new Particle.DustOptions(particleData.getColor(), 1);
+                world.spawnParticle(particleData.getParticle(), location, particleData.getCount(), dustOptions);
+            } else {
+                world.spawnParticle(particleData.getParticle(), location, particleData.getCount());
             }
         }), 0L, 1L);
     }
