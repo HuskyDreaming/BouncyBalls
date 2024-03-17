@@ -1,15 +1,16 @@
 package com.huskydreaming.bouncyball.services.implementations;
 
 import com.google.common.reflect.TypeToken;
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.data.ProjectileDefault;
-import com.huskydreaming.bouncyball.data.ProjectilePhysics;
-import com.huskydreaming.bouncyball.data.ProjectileSetting;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileDefault;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectilePhysics;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.base.Json;
-import com.huskydreaming.bouncyball.utilities.Util;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.storage.Json;
+import com.huskydreaming.huskycore.utilities.Util;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Type;
@@ -32,7 +34,7 @@ public class ProjectileServiceImpl implements ProjectileService {
     private final Map<Projectile, String> projectileMap = new ConcurrentHashMap<>();
 
     @Override
-    public void deserialize(BouncyBallPlugin plugin) {
+    public void deserialize(HuskyPlugin plugin) {
         Type type = new TypeToken<Map<String, ProjectileData>>() {
         }.getType();
         projectileDataMap = Json.read(plugin, "data/projectiles", type);
@@ -51,7 +53,7 @@ public class ProjectileServiceImpl implements ProjectileService {
     }
 
     @Override
-    public void serialize(BouncyBallPlugin plugin) {
+    public void serialize(HuskyPlugin plugin) {
         Json.write(plugin, "data/projectiles", projectileDataMap);
     }
 
@@ -109,7 +111,7 @@ public class ProjectileServiceImpl implements ProjectileService {
         ProjectileData projectileData = getDataFromProjectile(projectile);
         if (projectileData == null) return null;
 
-        BlockFace blockFace = Util.getInverseFace(projectile);
+        BlockFace blockFace = getInverseFace(projectile);
 
         if (blockFace == null) return null;
         Vector velocity = projectile.getVelocity();
@@ -199,6 +201,26 @@ public class ProjectileServiceImpl implements ProjectileService {
         return projectileDataMap.get(key);
     }
 
+    @Override
+    public BlockFace getInverseFace(Projectile projectile) {
+        Location location = projectile.getLocation();
+        World world = location.getWorld();
+        if (world == null) return null;
+
+        Block block = location.getBlock();
+        BlockIterator blockIterator = new BlockIterator(world, location.toVector(), projectile.getVelocity(), 0.0D, 3);
+
+        Block previousBlock = block;
+        Block nextBlock = blockIterator.next();
+
+        while (blockIterator.hasNext() && (nextBlock.getType() == Material.AIR || nextBlock.isLiquid() || nextBlock.equals(block))) {
+            previousBlock = nextBlock;
+            nextBlock = blockIterator.next();
+        }
+
+        BlockFace blockFace = nextBlock.getFace(previousBlock);
+        return blockFace == BlockFace.SELF ? BlockFace.UP : blockFace;
+    }
 
     @Override
     public void removeProjectile(Projectile projectile) {

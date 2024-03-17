@@ -1,4 +1,4 @@
-package com.huskydreaming.bouncyball.data;
+package com.huskydreaming.bouncyball.data.projectiles;
 
 public enum ProjectileSetting {
     RETURNS("Goes into inventory when player is hit"),

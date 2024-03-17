@@ -1,12 +1,12 @@
-package com.huskydreaming.bouncyball.inventories.providers;
+package com.huskydreaming.bouncyball.inventories;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.inventories.base.InventoryPageProvider;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.enumeration.Menu;
-import com.huskydreaming.bouncyball.utilities.ItemBuilder;
+import com.huskydreaming.bouncyball.pareseables.Menu;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.inventories.InventoryPageProvider;
+import com.huskydreaming.huskycore.utilities.ItemBuilder;
 import fr.minuskube.inv.content.InventoryContents;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,11 +16,11 @@ import org.bukkit.inventory.ItemStack;
 public class MaterialInventory extends InventoryPageProvider<Material> {
 
     private final String key;
-    private final BouncyBallPlugin plugin;
+    private final HuskyPlugin plugin;
     private final InventoryService inventoryService;
     private final ProjectileService projectileService;
 
-    public MaterialInventory(BouncyBallPlugin plugin, String key, int rows, Material[] array) {
+    public MaterialInventory(HuskyPlugin plugin, String key, int rows, Material[] array) {
         super(rows, array);
         this.key = key;
         this.plugin = plugin;

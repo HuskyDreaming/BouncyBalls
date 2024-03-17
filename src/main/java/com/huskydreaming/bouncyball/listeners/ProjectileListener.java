@@ -1,8 +1,8 @@
 package com.huskydreaming.bouncyball.listeners;
 
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.data.ProjectileSetting;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

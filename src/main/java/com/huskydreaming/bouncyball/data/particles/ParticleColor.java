@@ -1,4 +1,4 @@
-package com.huskydreaming.bouncyball.data;
+package com.huskydreaming.bouncyball.data.particles;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Color;

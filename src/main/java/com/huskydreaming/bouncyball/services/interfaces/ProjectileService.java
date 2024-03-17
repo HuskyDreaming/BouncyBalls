@@ -1,7 +1,8 @@
 package com.huskydreaming.bouncyball.services.interfaces;
 
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.services.base.ServiceInterface;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
+import com.huskydreaming.huskycore.interfaces.Service;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -10,7 +11,9 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 
-public interface ProjectileService extends ServiceInterface {
+public interface ProjectileService extends Service {
+
+    BlockFace getInverseFace(Projectile projectile);
 
     void removeProjectile(Projectile projectile);
 

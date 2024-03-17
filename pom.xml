@@ -6,14 +6,21 @@
 
     <groupId>com.huskydreaming</groupId>
     <artifactId>Bouncyballs</artifactId>
-    <version>6.2-RELEASE</version>
+    <version>6.3-RELEASE</version>
 
     <properties>
+        <minecraft.version>1.20.4-R0.1-SNAPSHOT</minecraft.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -48,6 +55,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -55,7 +66,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>${minecraft.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>${minecraft.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -65,10 +82,14 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.huskydreaming</groupId>
+            <artifactId>HuskyCore</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>fr.minuskube.inv</groupId>
             <artifactId>smart-invs</artifactId>
             <version>1.2.7</version>
         </dependency>
     </dependencies>
-
 </project>

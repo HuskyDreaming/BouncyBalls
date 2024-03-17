@@ -1,11 +1,11 @@
 package com.huskydreaming.bouncyball.services.implementations;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ParticleColor;
-import com.huskydreaming.bouncyball.inventories.providers.*;
+import com.huskydreaming.bouncyball.data.particles.ParticleColor;
+import com.huskydreaming.bouncyball.inventories.*;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.utilities.Util;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.utilities.Util;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ public class InventoryServiceImpl implements InventoryService {
     private InventoryManager inventoryManager;
 
     @Override
-    public SmartInventory getBouncyBallsInventory(BouncyBallPlugin plugin) {
+    public SmartInventory getBouncyBallsInventory(HuskyPlugin plugin) {
         ProjectileService projectileService = plugin.provide(ProjectileService.class);
         String[] keys = projectileService.getProjectileDataMap().keySet().toArray(new String[0]);
         int rows = (int) Math.ceil((double) keys.length / 9);
@@ -34,7 +34,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public SmartInventory getEditInventory(BouncyBallPlugin plugin, String key) {
+    public SmartInventory getEditInventory(HuskyPlugin plugin, String key) {
         EditInventory mainInventory = new EditInventory(plugin, key);
         String name =  Util.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
@@ -47,7 +47,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public SmartInventory getMaterialInventory(World world, BouncyBallPlugin plugin, String key) {
+    public SmartInventory getMaterialInventory(World world, HuskyPlugin plugin, String key) {
         Material[] materials = Material.values();
         Material[] materialsWithoutAir = Arrays.copyOfRange(materials, 1, materials.length);
         Material[] supportedMaterials = Arrays.stream(materialsWithoutAir)
@@ -68,7 +68,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public SmartInventory getParticleInventory(BouncyBallPlugin plugin, String key) {
+    public SmartInventory getParticleInventory(HuskyPlugin plugin, String key) {
         Particle[] particles = Particle.values();
         int rows = (int) Math.ceil((double) particles.length / 9);
 
@@ -84,7 +84,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public SmartInventory getColorInventory(BouncyBallPlugin plugin, String key) {
+    public SmartInventory getColorInventory(HuskyPlugin plugin, String key) {
         ParticleColor[] particleColors = ParticleColor.values();
         int rows = (int) Math.ceil((double) particleColors.length / 9);
 
@@ -99,7 +99,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void deserialize(BouncyBallPlugin plugin) {
+    public void deserialize(HuskyPlugin plugin) {
         inventoryManager = new InventoryManager(plugin);
         inventoryManager.init();
     }

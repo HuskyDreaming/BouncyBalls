@@ -2,12 +2,13 @@ package com.huskydreaming.bouncyball.services.implementations;
 
 import com.google.common.reflect.TypeToken;
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ParticleData;
-import com.huskydreaming.bouncyball.data.ProjectileDefault;
+import com.huskydreaming.bouncyball.data.particles.ParticleData;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileDefault;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
-import com.huskydreaming.bouncyball.storage.base.Json;
-import com.huskydreaming.bouncyball.utilities.Util;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.storage.Json;
+import com.huskydreaming.huskycore.utilities.Util;
 import org.bukkit.*;
 
 import java.lang.reflect.Type;
@@ -21,7 +22,7 @@ public class ParticleServiceImpl implements ParticleService {
     private final ProjectileService projectileService;
 
     @Override
-    public void deserialize(BouncyBallPlugin plugin) {
+    public void deserialize(HuskyPlugin plugin) {
         Type type = new TypeToken<Map<String, ParticleData>>() {}.getType();
         particleDataMap = Json.read(plugin, "data/particles", type);
 
@@ -39,7 +40,7 @@ public class ParticleServiceImpl implements ParticleService {
     }
 
     @Override
-    public void serialize(BouncyBallPlugin plugin) {
+    public void serialize(HuskyPlugin plugin) {
         Json.write(plugin, "data/particles", particleDataMap);
     }
 

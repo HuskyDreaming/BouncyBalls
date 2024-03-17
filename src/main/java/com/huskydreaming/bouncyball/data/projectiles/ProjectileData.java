@@ -1,4 +1,4 @@
-package com.huskydreaming.bouncyball.data;
+package com.huskydreaming.bouncyball.data.projectiles;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;

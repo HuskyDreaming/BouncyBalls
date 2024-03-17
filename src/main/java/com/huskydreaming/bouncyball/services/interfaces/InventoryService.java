@@ -1,19 +1,19 @@
 package com.huskydreaming.bouncyball.services.interfaces;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.services.base.ServiceInterface;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.interfaces.Service;
 import fr.minuskube.inv.SmartInventory;
 import org.bukkit.World;
 
-public interface InventoryService extends ServiceInterface {
+public interface InventoryService extends Service {
 
-    SmartInventory getBouncyBallsInventory(BouncyBallPlugin plugin);
+    SmartInventory getBouncyBallsInventory(HuskyPlugin plugin);
 
-    SmartInventory getEditInventory(BouncyBallPlugin plugin, String key);
+    SmartInventory getEditInventory(HuskyPlugin plugin, String key);
 
-    SmartInventory getMaterialInventory(World world, BouncyBallPlugin plugin, String key);
+    SmartInventory getMaterialInventory(World world, HuskyPlugin plugin, String key);
 
-    SmartInventory getParticleInventory(BouncyBallPlugin plugin, String key);
+    SmartInventory getParticleInventory(HuskyPlugin plugin, String key);
 
-    SmartInventory getColorInventory(BouncyBallPlugin plugin, String key);
+    SmartInventory getColorInventory(HuskyPlugin plugin, String key);
 }

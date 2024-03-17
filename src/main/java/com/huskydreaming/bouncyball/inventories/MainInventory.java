@@ -1,13 +1,13 @@
-package com.huskydreaming.bouncyball.inventories.providers;
+package com.huskydreaming.bouncyball.inventories;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.inventories.base.InventoryPageProvider;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.enumeration.Locale;
-import com.huskydreaming.bouncyball.storage.enumeration.Menu;
-import com.huskydreaming.bouncyball.utilities.ItemBuilder;
+import com.huskydreaming.bouncyball.pareseables.Locale;
+import com.huskydreaming.bouncyball.pareseables.Menu;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.inventories.InventoryPageProvider;
+import com.huskydreaming.huskycore.utilities.ItemBuilder;
 import fr.minuskube.inv.content.InventoryContents;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,11 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class MainInventory extends InventoryPageProvider<String> {
-    private final BouncyBallPlugin plugin;
+    private final HuskyPlugin plugin;
     private final InventoryService inventoryService;
     private final ProjectileService projectileService;
 
-    public MainInventory(BouncyBallPlugin plugin, int rows, String[] keys) {
+    public MainInventory(HuskyPlugin plugin, int rows, String[] keys) {
         super(rows, keys);
         this.plugin = plugin;
 

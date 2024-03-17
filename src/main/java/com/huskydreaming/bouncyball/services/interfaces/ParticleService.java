@@ -1,11 +1,10 @@
 package com.huskydreaming.bouncyball.services.interfaces;
 
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ParticleData;
-import com.huskydreaming.bouncyball.services.base.ServiceInterface;
+import com.huskydreaming.bouncyball.data.particles.ParticleData;
+import com.huskydreaming.huskycore.interfaces.Service;
 
-public interface ParticleService extends ServiceInterface {
-
+public interface ParticleService extends Service {
 
     void addParticle(String key, ParticleData particleData);
 

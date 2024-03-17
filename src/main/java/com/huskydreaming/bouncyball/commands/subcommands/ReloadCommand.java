@@ -1,26 +1,25 @@
 package com.huskydreaming.bouncyball.commands.subcommands;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.commands.base.Command;
-import com.huskydreaming.bouncyball.commands.base.CommandInterface;
-import com.huskydreaming.bouncyball.commands.base.CommandLabel;
 import com.huskydreaming.bouncyball.services.interfaces.LocaleService;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.enumeration.Locale;
-import org.bukkit.entity.Player;
+import com.huskydreaming.bouncyball.pareseables.Locale;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.commands.Command;
+import com.huskydreaming.huskycore.commands.SubCommand;
+import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-@Command(label = CommandLabel.RELOAD)
-public class ReloadCommand implements CommandInterface {
+@Command(label = "reload")
+public class ReloadCommand implements SubCommand {
 
-    private final BouncyBallPlugin plugin;
+    private final HuskyPlugin plugin;
     private final LocaleService localeService;
     private final ParticleService particleService;
     private final ProjectileService projectileService;
 
-    public ReloadCommand(BouncyBallPlugin plugin) {
+    public ReloadCommand(HuskyPlugin plugin) {
         this.plugin = plugin;
 
         this.localeService = plugin.provide(LocaleService.class);
@@ -29,18 +28,18 @@ public class ReloadCommand implements CommandInterface {
     }
 
     @Override
-    public void run(Player player, String[] strings) {
+    public void run(CommandSender commandSender, String[] strings) {
         localeService.getLocale().reload(plugin);
         localeService.getMenu().reload(plugin);
 
         particleService.serialize(plugin);
         projectileService.serialize(plugin);
 
-        player.sendMessage(Locale.RELOAD.prefix());
+        commandSender.sendMessage(Locale.RELOAD.prefix());
     }
 
     @Override
     public List<String> onTabComplete(String[] strings) {
-        return List.of();
+        return null;
     }
 }

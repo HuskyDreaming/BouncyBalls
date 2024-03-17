@@ -1,10 +1,10 @@
 package com.huskydreaming.bouncyball.services.implementations;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.services.interfaces.LocaleService;
-import com.huskydreaming.bouncyball.storage.enumeration.Locale;
-import com.huskydreaming.bouncyball.storage.enumeration.Menu;
-import com.huskydreaming.bouncyball.storage.base.Yaml;
+import com.huskydreaming.bouncyball.pareseables.Locale;
+import com.huskydreaming.bouncyball.pareseables.Menu;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.storage.Yaml;
 
 public class LocaleServiceImpl implements LocaleService {
 
@@ -12,7 +12,7 @@ public class LocaleServiceImpl implements LocaleService {
     private Yaml menu;
 
     @Override
-    public void deserialize(BouncyBallPlugin plugin) {
+    public void deserialize(HuskyPlugin plugin) {
 
         // Localization for general messages
         locale = new Yaml("localisation/locale");

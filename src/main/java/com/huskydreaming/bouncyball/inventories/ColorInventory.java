@@ -1,13 +1,13 @@
-package com.huskydreaming.bouncyball.inventories.providers;
+package com.huskydreaming.bouncyball.inventories;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ParticleColor;
-import com.huskydreaming.bouncyball.data.ParticleData;
-import com.huskydreaming.bouncyball.inventories.base.InventoryPageProvider;
+import com.huskydreaming.bouncyball.data.particles.ParticleColor;
+import com.huskydreaming.bouncyball.data.particles.ParticleData;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
-import com.huskydreaming.bouncyball.storage.enumeration.Menu;
-import com.huskydreaming.bouncyball.utilities.ItemBuilder;
+import com.huskydreaming.bouncyball.pareseables.Menu;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.inventories.InventoryPageProvider;
+import com.huskydreaming.huskycore.utilities.ItemBuilder;
 import fr.minuskube.inv.content.InventoryContents;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -19,7 +19,7 @@ public class ColorInventory extends InventoryPageProvider<ParticleColor> {
     private final ParticleService particleService;
 
 
-    public ColorInventory(BouncyBallPlugin plugin, String key, int rows, ParticleColor[] array) {
+    public ColorInventory(HuskyPlugin plugin, String key, int rows, ParticleColor[] array) {
         super(rows, array);
         this.key = key;
 

@@ -1,7 +1,7 @@
-package com.huskydreaming.bouncyball.storage.enumeration;
+package com.huskydreaming.bouncyball.pareseables;
 
 import com.google.common.base.Functions;
-import com.huskydreaming.bouncyball.storage.base.Parseable;
+import com.huskydreaming.huskycore.interfaces.Parseable;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,6 +78,11 @@ public enum Menu implements Parseable {
     Menu(List<String> list) {
         this.list = list;
         this.def = null;
+    }
+
+    @Override
+    public String prefix(Object... objects) {
+        return null;
     }
 
     public String parse() {

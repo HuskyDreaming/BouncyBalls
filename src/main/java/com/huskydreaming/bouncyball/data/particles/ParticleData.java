@@ -1,4 +1,4 @@
-package com.huskydreaming.bouncyball.data;
+package com.huskydreaming.bouncyball.data.particles;
 
 import org.bukkit.Color;
 import org.bukkit.Particle;

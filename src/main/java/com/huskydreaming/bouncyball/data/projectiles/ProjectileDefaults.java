@@ -1,11 +1,8 @@
-package com.huskydreaming.bouncyball.registries;
+package com.huskydreaming.bouncyball.data.projectiles;
 
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.data.ProjectilePhysics;
-import com.huskydreaming.bouncyball.data.ProjectileSetting;
 import org.bukkit.Material;
 
-public class ProjectileRegistry {
+public class ProjectileDefaults {
 
     public static ProjectileData defaultData() {
         ProjectileData defaultData = new ProjectileData();

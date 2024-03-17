@@ -1,14 +1,14 @@
-package com.huskydreaming.bouncyball.inventories.providers;
+package com.huskydreaming.bouncyball.inventories;
 
-import com.huskydreaming.bouncyball.BouncyBallPlugin;
-import com.huskydreaming.bouncyball.data.ProjectileData;
-import com.huskydreaming.bouncyball.data.ProjectilePhysics;
-import com.huskydreaming.bouncyball.data.ProjectileSetting;
-import com.huskydreaming.bouncyball.inventories.base.InventoryItem;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectilePhysics;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
 import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
 import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.storage.enumeration.Menu;
-import com.huskydreaming.bouncyball.utilities.ItemBuilder;
+import com.huskydreaming.bouncyball.pareseables.Menu;
+import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.inventories.InventoryItem;
+import com.huskydreaming.huskycore.utilities.ItemBuilder;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
@@ -24,16 +24,16 @@ import java.util.Set;
 public class EditInventory implements InventoryProvider {
 
     private final String key;
-    private final BouncyBallPlugin plugin;
+    private final HuskyPlugin plugin;
     private final InventoryService inventoryService;
     private final ProjectileService projectileService;
 
-    public EditInventory(BouncyBallPlugin plugin, String key) {
+    public EditInventory(HuskyPlugin plugin, String key) {
         this.key = key;
         this.plugin = plugin;
 
         this.inventoryService = plugin.provide(InventoryService.class);
-        this.projectileService = plugin.provide(ProjectileService.class);
+        this.projectileService =  plugin.provide(ProjectileService.class);
     }
 
     @Override

@@ -1,5 +1,12 @@
 name: BouncyBalls
 main: com.huskydreaming.bouncyball.BouncyBallPlugin
-version: 6.2-RELEASE
+description: Balls with Juicy Physics and Customisation
+version: '${project.version}'
 api-version: 1.20
 author: HuskyDreaming
+website: https://www.spigotmc.org/members/huskydreaming.1413607/
+
+commands:
+  bouncyballs:
+    description: The bouncy-ball command.
+    aliases: [bb, bball, bouncyb, bouncyball]
