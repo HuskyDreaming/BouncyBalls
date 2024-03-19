@@ -8,6 +8,7 @@ import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
 import com.huskydreaming.bouncyball.pareseables.Menu;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.inventories.InventoryItem;
+import com.huskydreaming.huskycore.storage.parseables.DefaultMenu;
 import com.huskydreaming.huskycore.utilities.ItemBuilder;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.content.InventoryContents;
@@ -33,7 +34,7 @@ public class EditInventory implements InventoryProvider {
         this.plugin = plugin;
 
         this.inventoryService = plugin.provide(InventoryService.class);
-        this.projectileService =  plugin.provide(ProjectileService.class);
+        this.projectileService = plugin.provide(ProjectileService.class);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class EditInventory implements InventoryProvider {
             if (e.getWhoClicked() instanceof Player player) {
                 projectileService.removeProjectile(key);
 
-                if(projectileService.getProjectileDataMap().isEmpty()) {
+                if (projectileService.getProjectileDataMap().isEmpty()) {
                     player.closeInventory();
                 } else {
                     inventoryService.getBouncyBallsInventory(plugin).open(player);
@@ -112,11 +113,11 @@ public class EditInventory implements InventoryProvider {
     }
 
     private ClickableItem activeItem(ProjectileSetting projectileSetting, InventoryContents contents) {
-        String materialEnabled = Menu.GENERAL_ENABLE_MATERIAL.parse();
-        String materialDisabled = Menu.GENERAL_DISABLED_MATERIAL.parse();
+        String materialEnabled = DefaultMenu.ENABLE_MATERIAL.parse();
+        String materialDisabled = DefaultMenu.DISABLED_MATERIAL.parse();
 
-        String displayNameEnabled = Menu.GENERAL_ENABLE_TITLE.parameterize(projectileSetting.name());
-        String displayNameDisabled = Menu.GENERAL_DISABLED_TITLE.parameterize(projectileSetting.name());
+        String displayNameEnabled = DefaultMenu.ENABLE_TITLE.parameterize(projectileSetting.name());
+        String displayNameDisabled = DefaultMenu.DISABLED_TITLE.parameterize(projectileSetting.name());
 
         ProjectileData projectileData = projectileService.getDataFromKey(key);
         Set<ProjectileSetting> settings = projectileData.getSettings();
@@ -125,10 +126,10 @@ public class EditInventory implements InventoryProvider {
 
         String displayName = enabled ? displayNameEnabled : displayNameDisabled;
         Material material = Material.valueOf(enabled ? materialEnabled : materialDisabled);
-        String description = enabled ? Menu.GENERAL_ENABLED_DESCRIPTION.parse() : Menu.GENERAL_DISABLED_DESCRIPTION.parse();
+        String description = enabled ? DefaultMenu.ENABLED_DESCRIPTION.parse() : DefaultMenu.DISABLED_DESCRIPTION.parse();
 
         List<String> strings = new ArrayList<>();
-        strings.add(Menu.GENERAL_DESCRIPTION.parameterize(projectileSetting.getDescription()));
+        strings.add(DefaultMenu.DESCRIPTION.parameterize(projectileSetting.getDescription()));
         strings.add("");
         strings.add(description);
 

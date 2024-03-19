@@ -12,28 +12,12 @@ import java.util.stream.Collectors;
 
 public enum Menu implements Parseable {
 
-    // General Menu Items
-    GENERAL_BACK_TITLE("&fBack"),
-    GENERAL_BACK_LORE(Collections.singletonList("&7Click to go back.")),
-    GENERAL_PREVIOUS_TITLE("&fPrevious"),
-    GENERAL_PREVIOUS_LORE(Collections.singletonList("&7Click for previous page.")),
-    GENERAL_NEXT_TITLE("&fNext"),
-    GENERAL_NEXT_LORE(Collections.singletonList("&7Click for next page.")),
-    GENERAL_DESCRIPTION("&f{0}"),
-    GENERAL_ENABLE_TITLE("&a{0}"),
-    GENERAL_ENABLED_DESCRIPTION("&7Click to disable."),
-    GENERAL_ENABLE_MATERIAL("LIME_DYE"),
-    GENERAL_DISABLED_TITLE("&c{0}"),
-    GENERAL_DISABLED_DESCRIPTION("&7Click to enable."),
-    GENERAL_DISABLED_MATERIAL("GRAY_DYE"),
-    GENERAL_NO_PERMISSIONS_TITLE("&c{0}"),
-    GENERAL_NO_PERMISSIONS_LORE(Collections.singletonList("&7No permissions.")),
-
+    // Projectile Menu
     PROJECTILE_TITLE("&f{0}"),
     PROJECTILE_LORE(Collections.singletonList("&7Left-Click to retrieve bouncy ball.")),
     PROJECTILE_EDIT("&7Right-Click to edit"),
 
-    // EDIT MENU
+    // Edit Menu
 
     EDIT_AMOUNT_TITLE("&cAmount: &b{0}"),
     EDIT_AMOUNT_LORE(List.of("", "&7Left-Click to increase", "&7Right-Click to decrease")),

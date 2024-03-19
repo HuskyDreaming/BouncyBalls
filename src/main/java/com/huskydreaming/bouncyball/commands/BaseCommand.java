@@ -6,7 +6,6 @@ import com.huskydreaming.bouncyball.pareseables.Locale;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.commands.AbstractCommand;
 import com.huskydreaming.huskycore.interfaces.Parseable;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BaseCommand extends AbstractCommand {
@@ -24,13 +23,11 @@ public class BaseCommand extends AbstractCommand {
     }
 
     @Override
-    public void run(CommandSender commandSender, String[] strings) {
-        if (commandSender instanceof Player player) {
-            if (projectileService.getProjectileDataMap().isEmpty()) {
-                commandSender.sendMessage(Locale.NO_BOUNCY_BALLS.prefix());
-            } else {
-                inventoryService.getBouncyBallsInventory(plugin).open(player);
-            }
+    public void run(Player player, String[] strings) {
+        if (projectileService.getProjectileDataMap().isEmpty()) {
+            player.sendMessage(Locale.NO_BOUNCY_BALLS.prefix());
+        } else {
+            inventoryService.getBouncyBallsInventory(plugin).open(player);
         }
     }
 

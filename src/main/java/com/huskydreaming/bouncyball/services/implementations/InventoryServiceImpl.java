@@ -51,7 +51,7 @@ public class InventoryServiceImpl implements InventoryService {
         Material[] materials = Material.values();
         Material[] materialsWithoutAir = Arrays.copyOfRange(materials, 1, materials.length);
         Material[] supportedMaterials = Arrays.stream(materialsWithoutAir)
-                .filter(material -> material.isEnabledByFeature(world) && material.isItem())
+                .filter(material -> isEnabled(world, material) && material.isItem())
                 .toList()
                 .toArray(new Material[0]);
 
@@ -102,5 +102,10 @@ public class InventoryServiceImpl implements InventoryService {
     public void deserialize(HuskyPlugin plugin) {
         inventoryManager = new InventoryManager(plugin);
         inventoryManager.init();
+    }
+
+    private boolean isEnabled(World world, Material material) {
+        if(Util.getVersion().get(1) < 20) return true;
+        return material.isEnabledByFeature(world);
     }
 }

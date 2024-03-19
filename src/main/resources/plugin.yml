@@ -2,7 +2,7 @@ name: BouncyBalls
 main: com.huskydreaming.bouncyball.BouncyBallPlugin
 description: Balls with Juicy Physics and Customisation
 version: '${project.version}'
-api-version: 1.20
+api-version: 1.18
 author: HuskyDreaming
 website: https://www.spigotmc.org/members/huskydreaming.1413607/
 

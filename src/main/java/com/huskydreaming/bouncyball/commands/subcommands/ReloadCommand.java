@@ -7,9 +7,8 @@ import com.huskydreaming.bouncyball.pareseables.Locale;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.commands.Command;
 import com.huskydreaming.huskycore.commands.SubCommand;
-import org.bukkit.command.CommandSender;
-
-import java.util.List;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 @Command(label = "reload")
 public class ReloadCommand implements SubCommand {
@@ -28,18 +27,24 @@ public class ReloadCommand implements SubCommand {
     }
 
     @Override
-    public void run(CommandSender commandSender, String[] strings) {
+    public void run(Player player, String[] strings) {
         localeService.getLocale().reload(plugin);
         localeService.getMenu().reload(plugin);
 
         particleService.serialize(plugin);
         projectileService.serialize(plugin);
 
-        commandSender.sendMessage(Locale.RELOAD.prefix());
+        player.sendMessage(Locale.RELOAD.prefix());
     }
 
     @Override
-    public List<String> onTabComplete(String[] strings) {
-        return null;
+    public void run(ConsoleCommandSender sender, String[] strings) {
+        localeService.getLocale().reload(plugin);
+        localeService.getMenu().reload(plugin);
+
+        particleService.serialize(plugin);
+        projectileService.serialize(plugin);
+
+        sender.sendMessage(Locale.RELOAD.prefix());
     }
 }

@@ -7,9 +7,8 @@ import com.huskydreaming.bouncyball.pareseables.Locale;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.commands.Command;
 import com.huskydreaming.huskycore.commands.SubCommand;
-import org.bukkit.command.CommandSender;
-
-import java.util.List;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 @Command(label = "create")
 public class CreateCommand implements SubCommand {
@@ -23,11 +22,11 @@ public class CreateCommand implements SubCommand {
     }
 
     @Override
-    public void run(CommandSender commandSender, String[] strings) {
+    public void run(Player player, String[] strings) {
         if (strings.length == 2) {
             String string = strings[1].toLowerCase();
             if (projectileService.containKey(string.toLowerCase())) {
-                commandSender.sendMessage(Locale.BOUNCY_BALL_EXISTS.prefix(string));
+                player.sendMessage(Locale.BOUNCY_BALL_EXISTS.prefix(string));
                 return;
             }
 
@@ -35,12 +34,24 @@ public class CreateCommand implements SubCommand {
             particleService.addParticle(string, projectileDefault.getParticleData());
             projectileService.addProjectile(string, projectileDefault.getProjectileData());
 
-            commandSender.sendMessage(Locale.BOUNCY_BALL_CREATE.prefix(string));
+            player.sendMessage(Locale.BOUNCY_BALL_CREATE.prefix(string));
         }
     }
 
     @Override
-    public List<String> onTabComplete(String[] strings) {
-        return null;
+    public void run(ConsoleCommandSender sender, String[] strings) {
+        if (strings.length == 2) {
+            String string = strings[1].toLowerCase();
+            if (projectileService.containKey(string.toLowerCase())) {
+                sender.sendMessage(Locale.BOUNCY_BALL_EXISTS.prefix(string));
+                return;
+            }
+
+            ProjectileDefault projectileDefault = ProjectileDefault.DEFAULT;
+            particleService.addParticle(string, projectileDefault.getParticleData());
+            projectileService.addProjectile(string, projectileDefault.getProjectileData());
+
+            sender.sendMessage(Locale.BOUNCY_BALL_CREATE.prefix(string));
+        }
     }
 }
