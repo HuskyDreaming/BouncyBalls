@@ -25,7 +25,7 @@ public class LocaleServiceImpl implements LocaleService {
         locale.save();
 
         // Localization for menus
-        menu = new Yaml("localisation/menu");
+        menu = new Yaml("menus/bouncyballs");
         menu.load(plugin);
         Menu.setConfiguration(menu.getConfiguration());
 
