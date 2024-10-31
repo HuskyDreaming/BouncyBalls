@@ -1,50 +1,38 @@
 package com.huskydreaming.bouncyball.commands.subcommands;
 
-import com.huskydreaming.bouncyball.services.interfaces.LocaleService;
-import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
-import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.pareseables.Locale;
+import com.huskydreaming.bouncyball.handlers.interfaces.LocalizationHandler;
+import com.huskydreaming.bouncyball.enumerations.Locale;
+import com.huskydreaming.bouncyball.repositories.interfaces.ParticleRepository;
+import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
-import com.huskydreaming.huskycore.commands.Command;
-import com.huskydreaming.huskycore.commands.SubCommand;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
+import com.huskydreaming.huskycore.commands.annotations.CommandAnnotation;
+import com.huskydreaming.huskycore.commands.providers.CommandProvider;
+import org.bukkit.command.CommandSender;
 
-@Command(label = "reload")
-public class ReloadCommand implements SubCommand {
+@CommandAnnotation(label = "reload")
+public class ReloadCommand implements CommandProvider {
 
     private final HuskyPlugin plugin;
-    private final LocaleService localeService;
-    private final ParticleService particleService;
-    private final ProjectileService projectileService;
+    private final LocalizationHandler localizationHandler;
+    private final ParticleRepository particleRepository;
+    private final ProjectileRepository projectileRepository;
 
     public ReloadCommand(HuskyPlugin plugin) {
         this.plugin = plugin;
 
-        this.localeService = plugin.provide(LocaleService.class);
-        this.particleService = plugin.provide(ParticleService.class);
-        this.projectileService = plugin.provide(ProjectileService.class);
+        this.localizationHandler = plugin.provide(LocalizationHandler.class);
+        this.particleRepository = plugin.provide(ParticleRepository.class);
+        this.projectileRepository = plugin.provide(ProjectileRepository.class);
     }
 
     @Override
-    public void run(Player player, String[] strings) {
-        localeService.getLocale().reload(plugin);
-        localeService.getMenu().reload(plugin);
+    public void onCommand(CommandSender commandSender, String[] strings) {
+        localizationHandler.getLocale().reload(plugin);
+        localizationHandler.getMenu().reload(plugin);
 
-        particleService.serialize(plugin);
-        projectileService.serialize(plugin);
+        particleRepository.postDeserialize(plugin);
+        projectileRepository.postDeserialize(plugin);
 
-        player.sendMessage(Locale.RELOAD.prefix());
-    }
-
-    @Override
-    public void run(ConsoleCommandSender sender, String[] strings) {
-        localeService.getLocale().reload(plugin);
-        localeService.getMenu().reload(plugin);
-
-        particleService.serialize(plugin);
-        projectileService.serialize(plugin);
-
-        sender.sendMessage(Locale.RELOAD.prefix());
+        commandSender.sendMessage(Locale.RELOAD.prefix());
     }
 }

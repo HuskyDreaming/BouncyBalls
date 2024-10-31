@@ -17,6 +17,10 @@ public class ParticleData {
         return new ParticleData(particle, color);
     }
 
+    public ParticleData() {
+
+    }
+
     public ParticleData(Particle particle, Color color) {
         this.particle = particle;
         this.color = color;

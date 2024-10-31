@@ -1,10 +1,11 @@
 package com.huskydreaming.bouncyball.commands.subcommands;
 
-import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.pareseables.Locale;
+import com.huskydreaming.bouncyball.handlers.interfaces.ProjectileHandler;
+import com.huskydreaming.bouncyball.enumerations.Locale;
+import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
-import com.huskydreaming.huskycore.commands.Command;
-import com.huskydreaming.huskycore.commands.SubCommand;
+import com.huskydreaming.huskycore.commands.annotations.CommandAnnotation;
+import com.huskydreaming.huskycore.commands.providers.PlayerCommandProvider;
 import com.huskydreaming.huskycore.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,18 +14,19 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Command(label = "give")
-public class GiveCommand implements SubCommand {
+@CommandAnnotation(label = "give")
+public class GiveCommand implements PlayerCommandProvider {
 
-    private final ProjectileService projectileService;
+    private final ProjectileHandler projectileHandler;
+    private final ProjectileRepository projectileRepository;
 
     public GiveCommand(HuskyPlugin plugin) {
-        this.projectileService = plugin.provide(ProjectileService.class);
+        this.projectileHandler = plugin.provide(ProjectileHandler.class);
+        this.projectileRepository = plugin.provide(ProjectileRepository.class);
     }
 
-
     @Override
-    public void run(Player player, String[] strings) {
+    public void onCommand(Player player, String[] strings) {
         if (strings.length == 3) {
             Player target = Bukkit.getPlayer(strings[1]);
             if (target == null) {
@@ -32,12 +34,13 @@ public class GiveCommand implements SubCommand {
                 return;
             }
 
-            if (projectileService.containKey(strings[2])) {
-                ItemStack itemStack = projectileService.getItemStackFromKey(strings[2]);
+            String projectileName = strings[2];
+            if (projectileRepository.hasProjectileData(projectileName)) {
+                ItemStack itemStack = projectileHandler.getItemStackFromKey(projectileName);
                 player.getInventory().addItem(itemStack);
-                player.sendMessage(Locale.BOUNCY_BALL_GIVE.prefix(strings[2].toLowerCase()));
+                player.sendMessage(Locale.BOUNCY_BALL_GIVE.prefix(projectileName.toLowerCase()));
             } else {
-                player.sendMessage(Locale.BOUNCY_BALL_NULL.prefix(strings[2]));
+                player.sendMessage(Locale.BOUNCY_BALL_NULL.prefix(projectileName));
             }
         }
 
@@ -53,21 +56,23 @@ public class GiveCommand implements SubCommand {
                 return;
             }
 
-            if (projectileService.containKey(strings[2])) {
-                ItemStack itemStack = projectileService.getItemStackFromKey(strings[2]);
+            String projectileName = strings[2];
+            if (projectileRepository.hasProjectileData(projectileName)) {
+                ItemStack itemStack = projectileHandler.getItemStackFromKey(projectileName);
                 itemStack.setAmount(Integer.parseInt(strings[3]));
                 player.getInventory().addItem(itemStack);
-                player.sendMessage(Locale.BOUNCY_BALL_GIVE.prefix(strings[2].toLowerCase()));
+                player.sendMessage(Locale.BOUNCY_BALL_GIVE.prefix(projectileName.toLowerCase()));
             } else {
-                player.sendMessage(Locale.BOUNCY_BALL_NULL.prefix(strings[1]));
+                player.sendMessage(Locale.BOUNCY_BALL_NULL.prefix(projectileName));
             }
         }
     }
 
     @Override
     public List<String> onTabComplete(Player player, String[] strings) {
-        if (strings.length == 2) return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
-        if (strings.length == 3) return projectileService.getProjectileDataMap().keySet().stream().toList();
+        if (strings.length == 2)
+            return Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+        if (strings.length == 3) return projectileRepository.getProjectileDataMap().keySet().stream().toList();
         return List.of();
     }
 }

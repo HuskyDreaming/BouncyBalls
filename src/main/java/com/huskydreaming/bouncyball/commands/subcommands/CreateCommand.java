@@ -1,57 +1,39 @@
 package com.huskydreaming.bouncyball.commands.subcommands;
 
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileDefault;
-import com.huskydreaming.bouncyball.services.interfaces.ParticleService;
-import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.pareseables.Locale;
+import com.huskydreaming.bouncyball.enumerations.Locale;
+import com.huskydreaming.bouncyball.repositories.interfaces.ParticleRepository;
+import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
-import com.huskydreaming.huskycore.commands.Command;
-import com.huskydreaming.huskycore.commands.SubCommand;
-import org.bukkit.command.ConsoleCommandSender;
+import com.huskydreaming.huskycore.commands.annotations.CommandAnnotation;
+import com.huskydreaming.huskycore.commands.providers.PlayerCommandProvider;
 import org.bukkit.entity.Player;
 
-@Command(label = "create")
-public class CreateCommand implements SubCommand {
+@CommandAnnotation(label = "create")
+public class CreateCommand implements PlayerCommandProvider {
 
-    private final ParticleService particleService;
-    private final ProjectileService projectileService;
+    private final ParticleRepository particleRepository;
+    private final ProjectileRepository projectileRepository;
 
     public CreateCommand(HuskyPlugin plugin) {
-        this.particleService = plugin.provide(ParticleService.class);
-        this.projectileService = plugin.provide(ProjectileService.class);
+        this.particleRepository = plugin.provide(ParticleRepository.class);
+        this.projectileRepository = plugin.provide(ProjectileRepository.class);
     }
 
     @Override
-    public void run(Player player, String[] strings) {
+    public void onCommand(Player player, String[] strings) {
         if (strings.length == 2) {
-            String string = strings[1].toLowerCase();
-            if (projectileService.containKey(string.toLowerCase())) {
-                player.sendMessage(Locale.BOUNCY_BALL_EXISTS.prefix(string));
+            String projectileName = strings[1].toLowerCase();
+            if (projectileRepository.hasProjectileData(projectileName)) {
+                player.sendMessage(Locale.BOUNCY_BALL_EXISTS.prefix(projectileName));
                 return;
             }
 
             ProjectileDefault projectileDefault = ProjectileDefault.DEFAULT;
-            particleService.addParticle(string, projectileDefault.getParticleData());
-            projectileService.addProjectile(string, projectileDefault.getProjectileData());
+            particleRepository.addParticleData(projectileName, projectileDefault.getParticleData());
+            projectileRepository.addProjectileData(projectileName, projectileDefault.getProjectileData());
 
-            player.sendMessage(Locale.BOUNCY_BALL_CREATE.prefix(string));
-        }
-    }
-
-    @Override
-    public void run(ConsoleCommandSender sender, String[] strings) {
-        if (strings.length == 2) {
-            String string = strings[1].toLowerCase();
-            if (projectileService.containKey(string.toLowerCase())) {
-                sender.sendMessage(Locale.BOUNCY_BALL_EXISTS.prefix(string));
-                return;
-            }
-
-            ProjectileDefault projectileDefault = ProjectileDefault.DEFAULT;
-            particleService.addParticle(string, projectileDefault.getParticleData());
-            projectileService.addProjectile(string, projectileDefault.getProjectileData());
-
-            sender.sendMessage(Locale.BOUNCY_BALL_CREATE.prefix(string));
+            player.sendMessage(Locale.BOUNCY_BALL_CREATE.prefix(projectileName));
         }
     }
 }

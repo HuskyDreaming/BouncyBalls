@@ -3,13 +3,13 @@ package com.huskydreaming.bouncyball.inventories;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectilePhysics;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
-import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
-import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.pareseables.Menu;
+import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
+import com.huskydreaming.bouncyball.enumerations.Menu;
+import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.inventories.InventoryItem;
 import com.huskydreaming.huskycore.storage.parseables.DefaultMenu;
-import com.huskydreaming.huskycore.utilities.ItemBuilder;
+import com.huskydreaming.huskycore.utilities.builders.ItemBuilder;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.content.InventoryContents;
 import fr.minuskube.inv.content.InventoryProvider;
@@ -26,41 +26,56 @@ public class EditInventory implements InventoryProvider {
 
     private final String key;
     private final HuskyPlugin plugin;
-    private final InventoryService inventoryService;
-    private final ProjectileService projectileService;
+    private final InventoryHandler inventoryHandler;
+    private final ProjectileRepository projectileRepository;
 
     public EditInventory(HuskyPlugin plugin, String key) {
         this.key = key;
         this.plugin = plugin;
 
-        this.inventoryService = plugin.provide(InventoryService.class);
-        this.projectileService = plugin.provide(ProjectileService.class);
+        this.inventoryHandler = plugin.provide(InventoryHandler.class);
+        this.projectileRepository = plugin.provide(ProjectileRepository.class);
     }
 
     @Override
     public void init(Player player, InventoryContents contents) {
         contents.fillBorders(InventoryItem.border());
 
-        contents.set(0, 0, InventoryItem.back(player, inventoryService.getBouncyBallsInventory(plugin)));
-        contents.set(0, 1, deleteItem());
+        contents.set(0, 0, InventoryItem.back(player, inventoryHandler.getBouncyBallsInventory(plugin)));
 
-        contents.set(1, 2, editMaterials());
-        contents.set(1, 3, editParticles());
+        contents.set(1, 2, editBlocks());
+        contents.set(1, 3, editMaterials());
+        contents.set(1, 4, editParticles());
+        contents.set(1, 5, deleteItem());
 
-        int physicsIndex = 4;
+        int index = 2;
         for (ProjectilePhysics projectilePhysics : ProjectilePhysics.values()) {
-            contents.set(1, physicsIndex++, physicsItem(projectilePhysics, contents));
+            contents.set(2, index++, physicsItem(projectilePhysics, contents));
         }
 
-        int settingsIndex = 2;
+        index = 2;
         for (ProjectileSetting projectileSetting : ProjectileSetting.values()) {
-            contents.set(2, settingsIndex++, activeItem(projectileSetting, contents));
+            contents.set(3, index++, activeItem(projectileSetting, contents));
         }
     }
 
     @Override
     public void update(Player player, InventoryContents contents) {
 
+    }
+
+    private ClickableItem editBlocks() {
+        ItemStack itemStack = ItemBuilder.create()
+                .setDisplayName(Menu.EDIT_BLOCK_TITLE.parse())
+                .setLore(Menu.EDIT_BLOCK_LORE.parseList())
+                .setMaterial(Material.GRASS_BLOCK)
+                .build();
+
+        return ClickableItem.of(itemStack, e -> {
+            if (e.getWhoClicked() instanceof Player player) {
+                inventoryHandler.getBlockInventory(player.getWorld(), plugin, key).open(player);
+            }
+        });
     }
 
     private ClickableItem editMaterials() {
@@ -72,7 +87,7 @@ public class EditInventory implements InventoryProvider {
 
         return ClickableItem.of(itemStack, e -> {
             if (e.getWhoClicked() instanceof Player player) {
-                inventoryService.getMaterialInventory(player.getWorld(), plugin, key).open(player);
+                inventoryHandler.getMaterialInventory(player.getWorld(), plugin, key).open(player);
             }
         });
     }
@@ -86,12 +101,12 @@ public class EditInventory implements InventoryProvider {
 
         return ClickableItem.of(itemStack, e -> {
             if (e.getWhoClicked() instanceof Player player) {
-                projectileService.removeProjectile(key);
+                projectileRepository.removeProjectileData(key);
 
-                if (projectileService.getProjectileDataMap().isEmpty()) {
+                if (projectileRepository.getProjectileDataMap().isEmpty()) {
                     player.closeInventory();
                 } else {
-                    inventoryService.getBouncyBallsInventory(plugin).open(player);
+                    inventoryHandler.getBouncyBallsInventory(plugin).open(player);
                 }
 
             }
@@ -107,7 +122,7 @@ public class EditInventory implements InventoryProvider {
 
         return ClickableItem.of(itemStack, e -> {
             if (e.getWhoClicked() instanceof Player player) {
-                inventoryService.getParticleInventory(plugin, key).open(player);
+                inventoryHandler.getParticleInventory(plugin, key).open(player);
             }
         });
     }
@@ -119,17 +134,17 @@ public class EditInventory implements InventoryProvider {
         String displayNameEnabled = DefaultMenu.ENABLE_TITLE.parameterize(projectileSetting.name());
         String displayNameDisabled = DefaultMenu.DISABLED_TITLE.parameterize(projectileSetting.name());
 
-        ProjectileData projectileData = projectileService.getDataFromKey(key);
+        ProjectileData projectileData = projectileRepository.getProjectileData(key);
         Set<ProjectileSetting> settings = projectileData.getSettings();
 
         boolean enabled = settings.contains(projectileSetting);
 
         String displayName = enabled ? displayNameEnabled : displayNameDisabled;
         Material material = Material.valueOf(enabled ? materialEnabled : materialDisabled);
-        String description = enabled ? DefaultMenu.ENABLED_DESCRIPTION.parse() : DefaultMenu.DISABLED_DESCRIPTION.parse();
+        String description = enabled ? DefaultMenu.DESCRIPTION_ENABLE.parse() : DefaultMenu.DESCRIPTION_DISABLE.parse();
 
         List<String> strings = new ArrayList<>();
-        strings.add(DefaultMenu.DESCRIPTION.parameterize(projectileSetting.getDescription()));
+        strings.add(DefaultMenu.DESCRIPTION_DEFAULT.parameterize(projectileSetting.getDescription()));
         strings.add("");
         strings.add(description);
 
@@ -152,7 +167,7 @@ public class EditInventory implements InventoryProvider {
     }
 
     private ClickableItem physicsItem(ProjectilePhysics projectilePhysics, InventoryContents contents) {
-        ProjectileData projectileData = projectileService.getDataFromKey(key);
+        ProjectileData projectileData = projectileRepository.getProjectileData(key);
         double amount = projectileData.getPhysics(projectilePhysics);
 
         ItemStack itemStack = ItemBuilder.create()

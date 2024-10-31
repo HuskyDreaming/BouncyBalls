@@ -3,7 +3,7 @@ package com.huskydreaming.bouncyball.listeners;
 import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
-import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
+import com.huskydreaming.bouncyball.handlers.interfaces.ProjectileHandler;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -20,11 +20,11 @@ import org.bukkit.plugin.Plugin;
 public class ProjectileListener implements Listener {
 
     private final Plugin plugin;
-    private final ProjectileService projectileService;
+    private final ProjectileHandler projectileHandler;
 
     public ProjectileListener(BouncyBallPlugin plugin) {
         this.plugin = plugin;
-        this.projectileService = plugin.provide(ProjectileService.class);
+        this.projectileHandler = plugin.provide(ProjectileHandler.class);
     }
 
     @EventHandler
@@ -33,9 +33,9 @@ public class ProjectileListener implements Listener {
             ItemStack itemStack = event.getItem();
             if (itemStack == null) return;
 
-            String key = projectileService.getKeyFromItemStack(itemStack);
+            String key = projectileHandler.getKeyFromItemStack(itemStack);
             if (key != null) {
-                projectileService.launchProjectile(plugin, event.getPlayer(), itemStack, key);
+                projectileHandler.launchProjectile(plugin, event.getPlayer(), itemStack, key);
                 event.setCancelled(true);
             } else {
                 event.setCancelled(false);
@@ -44,7 +44,7 @@ public class ProjectileListener implements Listener {
             ItemStack itemStack = event.getItem();
             if (itemStack == null) return;
 
-            String key = projectileService.getKeyFromItemStack(itemStack);
+            String key = projectileHandler.getKeyFromItemStack(itemStack);
             if (key != null) {
                 event.setCancelled(true);
             }
@@ -56,7 +56,7 @@ public class ProjectileListener implements Listener {
         if (event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
             Entity entity = event.getIgnitingEntity();
 
-            if (entity != null && projectileService.hasProjectileData(entity)) {
+            if (entity != null && projectileHandler.hasProjectileData(entity)) {
                 event.setCancelled(true);
             }
         }
@@ -67,35 +67,35 @@ public class ProjectileListener implements Listener {
 
         if (event.getEntity() instanceof Snowball snowball) {
 
-            ProjectileData projectileData = projectileService.getDataFromProjectile(snowball);
+            ProjectileData projectileData = projectileHandler.getDataFromProjectile(snowball);
             if (projectileData == null) return;
 
             if (event.getHitEntity() instanceof Player player) {
 
                 if (projectileData.getSettings().contains(ProjectileSetting.RETURNS)) {
 
-                    ItemStack itemStack = projectileService.getItemStackFromProjectile(snowball);
+                    ItemStack itemStack = projectileHandler.getItemStackFromProjectile(snowball);
                     if (itemStack == null) return;
 
                     player.getInventory().addItem(itemStack);
-                    projectileService.removeProjectile(snowball);
+                    projectileHandler.removeProjectile(snowball);
                     snowball.remove();
                     return;
                 }
             }
 
             if (projectileData.isBouncyBlock(event.getHitBlock())) {
-                String key = projectileService.getKeyFromProjectile(snowball);
-                Projectile projectile = projectileService.updateProjectile(plugin, snowball);
-                if (projectile != null) projectileService.addProjectile(key, projectile);
+                String key = projectileHandler.getKeyFromProjectile(snowball);
+                Projectile projectile = projectileHandler.updateProjectile(plugin, snowball);
+                if (projectile != null) projectileHandler.addProjectile(key, projectile);
 
-                projectileService.removeProjectile(snowball);
+                projectileHandler.removeProjectile(snowball);
                 snowball.remove();
                 return;
             }
 
-            projectileService.dropProjectile(snowball);
-            projectileService.removeProjectile(snowball);
+            projectileHandler.dropProjectile(snowball);
+            projectileHandler.removeProjectile(snowball);
             snowball.remove();
         }
     }

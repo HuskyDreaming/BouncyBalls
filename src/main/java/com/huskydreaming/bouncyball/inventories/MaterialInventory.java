@@ -1,12 +1,12 @@
 package com.huskydreaming.bouncyball.inventories;
 
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
-import com.huskydreaming.bouncyball.services.interfaces.InventoryService;
-import com.huskydreaming.bouncyball.services.interfaces.ProjectileService;
-import com.huskydreaming.bouncyball.pareseables.Menu;
+import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
+import com.huskydreaming.bouncyball.enumerations.Menu;
+import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
-import com.huskydreaming.huskycore.inventories.InventoryPageProvider;
-import com.huskydreaming.huskycore.utilities.ItemBuilder;
+import com.huskydreaming.huskycore.inventories.providers.InventoryPageProvider;
+import com.huskydreaming.huskycore.utilities.builders.ItemBuilder;
 import fr.minuskube.inv.content.InventoryContents;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,28 +16,43 @@ import org.bukkit.inventory.ItemStack;
 public class MaterialInventory extends InventoryPageProvider<Material> {
 
     private final String key;
+    private final boolean blocksOnly;
+
     private final HuskyPlugin plugin;
-    private final InventoryService inventoryService;
-    private final ProjectileService projectileService;
+    private final InventoryHandler inventoryHandler;
+    private final ProjectileRepository projectileRepository;
 
-    public MaterialInventory(HuskyPlugin plugin, String key, int rows, Material[] array) {
-        super(rows, array);
+    public MaterialInventory(HuskyPlugin plugin, String key, int rows, Material[] array, boolean blocksOnly) {
+        super(blocksOnly ? "Blocks" : "Materials", rows, array);
         this.key = key;
-        this.plugin = plugin;
+        this.blocksOnly = blocksOnly;
 
-        this.inventoryService = plugin.provide(InventoryService.class);
-        this.projectileService = plugin.provide(ProjectileService.class);
-        this.smartInventory = inventoryService.getEditInventory(plugin, key);
+        this.plugin = plugin;
+        this.inventoryHandler = plugin.provide(InventoryHandler.class);
+        this.projectileRepository = plugin.provide(ProjectileRepository.class);
     }
 
     @Override
     public ItemStack construct(Player player, int index, Material material) {
-        ProjectileData projectileData = projectileService.getDataFromKey(key);
+        ProjectileData projectileData = projectileRepository.getProjectileData(key);
 
-        boolean isMaterial = projectileData.getMaterial() == material;
+        boolean isMaterial;
+        if(blocksOnly) {
+            isMaterial = projectileData.getBlocks().contains(material);
+        } else {
+            isMaterial = projectileData.getMaterial() == material;
+        }
 
-        Menu title = isMaterial ? Menu.EDIT_CURRENT_MATERIAL_TITLE : Menu.EDIT_SET_MATERIAL_TITLE;
-        Menu lore = isMaterial ? Menu.EDIT_CURRENT_MATERIAL_LORE : Menu.EDIT_SET_MATERIAL_LORE;
+        Menu title;
+        Menu lore;
+
+        if(blocksOnly) {
+            title = isMaterial ? Menu.EDIT_CURRENT_BLOCK_TITLE : Menu.EDIT_SET_BLOCK_TITLE;
+            lore = isMaterial ? Menu.EDIT_CURRENT_BLOCK_LORE : Menu.EDIT_SET_BLOCK_LORE;
+        } else {
+            title = isMaterial ? Menu.EDIT_CURRENT_MATERIAL_TITLE : Menu.EDIT_SET_MATERIAL_TITLE;
+            lore = isMaterial ? Menu.EDIT_CURRENT_MATERIAL_LORE : Menu.EDIT_SET_MATERIAL_LORE;
+        }
 
         return ItemBuilder.create()
                 .setDisplayName(title.parameterize(material))
@@ -50,11 +65,21 @@ public class MaterialInventory extends InventoryPageProvider<Material> {
     @Override
     public void run(InventoryClickEvent event, Material material, InventoryContents contents) {
         if (event.getWhoClicked() instanceof Player player) {
-            ProjectileData projectileData = projectileService.getDataFromKey(key);
+            ProjectileData projectileData = projectileRepository.getProjectileData(key);
             if (projectileData.getMaterial() == material) return;
 
-            projectileData.setMaterial(material);
-            inventoryService.getEditInventory(plugin, key).open(player);
+            if(blocksOnly) {
+                if(projectileData.getBlocks().contains(material)) {
+                    projectileData.removeBlock(material);
+                } else {
+                    projectileData.addBlock(material);
+                }
+
+                inventoryHandler.getBlockInventory(player.getWorld(), plugin, key).open(player);
+            } else {
+                projectileData.setMaterial(material);
+                inventoryHandler.getMaterialInventory(player.getWorld(), plugin, key).open(player);
+            }
         }
     }
 }
