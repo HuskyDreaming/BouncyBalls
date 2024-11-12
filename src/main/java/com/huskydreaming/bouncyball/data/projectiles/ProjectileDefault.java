@@ -27,4 +27,9 @@ public enum ProjectileDefault {
     public ProjectileData getProjectileData() {
         return projectileData;
     }
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }

@@ -5,7 +5,6 @@ import com.huskydreaming.bouncyball.data.projectiles.ProjectileDefault;
 import com.huskydreaming.bouncyball.repositories.interfaces.ParticleRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.storage.Yaml;
-import com.huskydreaming.huskycore.utilities.Util;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,10 +33,7 @@ public class ParticleRepositoryImpl implements ParticleRepository {
         if (keys.isEmpty()) {
             for (ProjectileDefault projectileDefault : ProjectileDefault.values()) {
                 if (projectileDefault == ProjectileDefault.DEFAULT) continue;
-                String[] strings = projectileDefault.name().toLowerCase().split("_");
-                String string = Util.capitalize(String.join("_", strings));
-
-                particleDataMap.put(string, projectileDefault.getParticleData());
+                particleDataMap.put(projectileDefault.toString(), projectileDefault.getParticleData());
             }
             yaml.save();
             return;

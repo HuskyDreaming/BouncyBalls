@@ -5,6 +5,7 @@ import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
 import com.huskydreaming.bouncyball.enumerations.Menu;
 import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.inventories.InventoryItem;
 import com.huskydreaming.huskycore.inventories.providers.InventoryPageProvider;
 import com.huskydreaming.huskycore.utilities.builders.ItemBuilder;
 import fr.minuskube.inv.content.InventoryContents;
@@ -30,6 +31,13 @@ public class MaterialInventory extends InventoryPageProvider<Material> {
         this.plugin = plugin;
         this.inventoryHandler = plugin.provide(InventoryHandler.class);
         this.projectileRepository = plugin.provide(ProjectileRepository.class);
+    }
+
+    @Override
+    public void init(Player player, InventoryContents contents) {
+        super.init(player, contents);
+
+        contents.set(0, 0, InventoryItem.back(player, inventoryHandler.getEditInventory(plugin, key)));
     }
 
     @Override
@@ -68,6 +76,7 @@ public class MaterialInventory extends InventoryPageProvider<Material> {
             ProjectileData projectileData = projectileRepository.getProjectileData(key);
             if (projectileData.getMaterial() == material) return;
 
+            int page = contents.pagination().getPage();
             if(blocksOnly) {
                 if(projectileData.getBlocks().contains(material)) {
                     projectileData.removeBlock(material);
@@ -75,10 +84,10 @@ public class MaterialInventory extends InventoryPageProvider<Material> {
                     projectileData.addBlock(material);
                 }
 
-                inventoryHandler.getBlockInventory(player.getWorld(), plugin, key).open(player);
+                inventoryHandler.getBlockInventory(player.getWorld(), plugin, key).open(player, page);
             } else {
                 projectileData.setMaterial(material);
-                inventoryHandler.getMaterialInventory(player.getWorld(), plugin, key).open(player);
+                inventoryHandler.getMaterialInventory(player.getWorld(), plugin, key).open(player, page);
             }
         }
     }

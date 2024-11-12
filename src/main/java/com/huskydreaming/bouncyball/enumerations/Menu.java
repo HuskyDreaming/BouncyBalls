@@ -17,7 +17,7 @@ public enum Menu implements Parseable {
     PROJECTILE_EDIT("&7Right-Click to edit"),
 
     // Edit Menu
-    EDIT_AMOUNT_TITLE("&cAmount: &b<0>"),
+    EDIT_AMOUNT_TITLE("&fAmount: &b<0>"),
     EDIT_AMOUNT_LORE(List.of("", "&7Left-Click to increase", "&7Right-Click to decrease")),
     EDIT_BLOCK_TITLE("&eEdit Blocks"),
     EDIT_BLOCK_LORE(List.of("&7Click to edit allowed blocks.")),

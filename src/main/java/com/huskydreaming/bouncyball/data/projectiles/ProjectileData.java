@@ -17,9 +17,7 @@ public final class ProjectileData {
     private Material material;
 
     public boolean isBouncyBlock(Block block) {
-        if (!blocks.isEmpty() && block != null) {
-            return blocks.contains(block.getType());
-        }
+        if (!blocks.isEmpty() && block != null) return blocks.contains(block.getType());
         return true;
     }
 

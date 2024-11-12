@@ -5,6 +5,7 @@ import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
 import com.huskydreaming.bouncyball.enumerations.Menu;
 import com.huskydreaming.bouncyball.repositories.interfaces.ParticleRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.inventories.InventoryItem;
 import com.huskydreaming.huskycore.inventories.providers.InventoryPageProvider;
 import com.huskydreaming.huskycore.utilities.builders.ItemBuilder;
 import fr.minuskube.inv.ClickableItem;
@@ -35,6 +36,7 @@ public class ParticleInventory extends InventoryPageProvider<Particle> {
     public void init(Player player, InventoryContents contents) {
         super.init(player, contents);
 
+        contents.set(0, 0, InventoryItem.back(player, inventoryHandler.getEditInventory(plugin, key)));
         contents.set(0, 1, amountItem(contents));
     }
 
@@ -60,10 +62,12 @@ public class ParticleInventory extends InventoryPageProvider<Particle> {
         if (event.getWhoClicked() instanceof Player player) {
             ParticleData particleData = particleRepository.getParticleData(key);
             particleData.setParticle(particle);
+
+            int page = contents.pagination().getPage();
             if (particle == Particle.REDSTONE) {
                 inventoryHandler.getColorInventory(plugin, key).open(player);
             } else {
-                inventoryHandler.getParticleInventory(plugin, key).open(player);
+                inventoryHandler.getParticleInventory(plugin, key).open(player, page);
             }
         }
     }
@@ -81,12 +85,13 @@ public class ParticleInventory extends InventoryPageProvider<Particle> {
 
         return ClickableItem.of(itemStack, e -> {
             if(e.getWhoClicked() instanceof Player player) {
+                int page = contents.pagination().getPage();
                 if(e.isRightClick()) {
                     if(count > 1) particleData.setCount(count - 1);
-                    contents.inventory().open(player);
+                    contents.inventory().open(player, page);
                 } else if(e.isLeftClick()) {
                     if(count < 16) particleData.setCount(count+ 1);
-                    contents.inventory().open(player);
+                    contents.inventory().open(player, page);
                 }
             }
         });

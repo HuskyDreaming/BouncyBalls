@@ -12,6 +12,9 @@ public class ProjectileDefaults {
         defaultData.addSetting(ProjectileSetting.DROPS);
         defaultData.addSetting(ProjectileSetting.REMOVES);
         defaultData.addSetting(ProjectileSetting.RETURNS);
+        defaultData.addBlock(Material.GRASS_BLOCK);
+        defaultData.addBlock(Material.SAND);
+        defaultData.addBlock(Material.STONE);
         defaultData.setMaterial(Material.SNOWBALL);
         return defaultData;
     }
@@ -25,6 +28,9 @@ public class ProjectileDefaults {
         snowballData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
         snowballData.setPhysics(ProjectilePhysics.THRESHOLD, 0.25D);
         snowballData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
+        snowballData.addBlock(Material.GRASS_BLOCK);
+        snowballData.addBlock(Material.SAND);
+        snowballData.addBlock(Material.STONE);
         return snowballData;
     }
 
@@ -36,6 +42,9 @@ public class ProjectileDefaults {
         turtleEggData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
         turtleEggData.setPhysics(ProjectilePhysics.THRESHOLD, 0.35D);
         turtleEggData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
+        turtleEggData.addBlock(Material.GRASS_BLOCK);
+        turtleEggData.addBlock(Material.SAND);
+        turtleEggData.addBlock(Material.STONE);
         return turtleEggData;
     }
 
@@ -48,6 +57,9 @@ public class ProjectileDefaults {
         hotPotatoData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 0.8D);
         hotPotatoData.setPhysics(ProjectilePhysics.THRESHOLD, 0.20D);
         hotPotatoData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
+        hotPotatoData.addBlock(Material.GRASS_BLOCK);
+        hotPotatoData.addBlock(Material.SAND);
+        hotPotatoData.addBlock(Material.STONE);
         return hotPotatoData;
     }
 
@@ -60,6 +72,9 @@ public class ProjectileDefaults {
         newtonsAppleData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.5D);
         newtonsAppleData.setPhysics(ProjectilePhysics.THRESHOLD, 0.15D);
         newtonsAppleData.setPhysics(ProjectilePhysics.DAMPING, 0.75D);
+        newtonsAppleData.addBlock(Material.GRASS_BLOCK);
+        newtonsAppleData.addBlock(Material.SAND);
+        newtonsAppleData.addBlock(Material.STONE);
         return newtonsAppleData;
     }
 
@@ -73,6 +88,9 @@ public class ProjectileDefaults {
         groovyJukeBoxData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
         groovyJukeBoxData.setPhysics(ProjectilePhysics.THRESHOLD, 0.20D);
         groovyJukeBoxData.setPhysics(ProjectilePhysics.DAMPING, 0.45D);
+        groovyJukeBoxData.addBlock(Material.GRASS_BLOCK);
+        groovyJukeBoxData.addBlock(Material.SAND);
+        groovyJukeBoxData.addBlock(Material.STONE);
         return groovyJukeBoxData;
     }
 }

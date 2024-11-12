@@ -2,6 +2,7 @@ package com.huskydreaming.bouncyball;
 
 import com.huskydreaming.bouncyball.commands.BaseCommand;
 import com.huskydreaming.bouncyball.commands.subcommands.CreateCommand;
+import com.huskydreaming.bouncyball.commands.subcommands.EditCommand;
 import com.huskydreaming.bouncyball.commands.subcommands.GiveCommand;
 import com.huskydreaming.bouncyball.commands.subcommands.ReloadCommand;
 import com.huskydreaming.bouncyball.handlers.implementations.InventoryHandlerImpl;
@@ -41,6 +42,7 @@ public class BouncyBallPlugin extends HuskyPlugin {
         CommandHandler commandHandler = handlerRegistry.provide(CommandHandler.class);
         commandHandler.setCommandExecutor(new BaseCommand(this));
         commandHandler.add(new CreateCommand(this));
+        commandHandler.add(new EditCommand(this));
         commandHandler.add(new GiveCommand(this));
         commandHandler.add(new ReloadCommand(this));
 

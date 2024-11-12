@@ -7,7 +7,6 @@ import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
 import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.storage.Yaml;
-import com.huskydreaming.huskycore.utilities.Util;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,10 +33,7 @@ public class ProjectileRepositoryImpl implements ProjectileRepository {
         if(keys.isEmpty()) {
             for (ProjectileDefault projectileDefault : ProjectileDefault.values()) {
                 if (projectileDefault == ProjectileDefault.DEFAULT) continue;
-                String[] strings = projectileDefault.name().toLowerCase().split("_");
-                String string = Util.capitalize(String.join("_", strings));
-
-                projectileDataMap.put(string, projectileDefault.getProjectileData());
+                projectileDataMap.put(projectileDefault.toString(), projectileDefault.getProjectileData());
             }
             yaml.save();
             return;
@@ -49,13 +45,13 @@ public class ProjectileRepositoryImpl implements ProjectileRepository {
             String materialName = configuration.getString(key + ".material");
             if(materialName != null) projectileData.setMaterial(Material.valueOf(materialName));
 
-            int damping = configuration.getInt(key + ".physics.damping");
+            double damping = configuration.getDouble(key + ".physics.damping");
             projectileData.setPhysics(ProjectilePhysics.DAMPING, damping);
 
-            int launchVelocity = configuration.getInt(key + ".physics.launch-velocity");
+            double launchVelocity = configuration.getDouble(key + ".physics.launch-velocity");
             projectileData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, launchVelocity);
 
-            int threshold = configuration.getInt(key + ".physics.threshold");
+            double threshold = configuration.getDouble(key + ".physics.threshold");
             projectileData.setPhysics(ProjectilePhysics.THRESHOLD, threshold);
 
             for(String setting : configuration.getStringList(key + ".settings")) {

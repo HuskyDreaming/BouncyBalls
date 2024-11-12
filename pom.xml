@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.huskydreaming</groupId>
-    <artifactId>Bouncyballs</artifactId>
-    <version>7.0-RELEASE</version>
+    <artifactId>bouncyballs</artifactId>
+    <version>7.1-RELEASE</version>
 
     <properties>
         <minecraft.version>1.20.4-R0.1-SNAPSHOT</minecraft.version>

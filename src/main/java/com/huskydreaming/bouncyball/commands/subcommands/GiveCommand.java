@@ -34,7 +34,7 @@ public class GiveCommand implements PlayerCommandProvider {
                 return;
             }
 
-            String projectileName = strings[2];
+            String projectileName = strings[2].toLowerCase();
             if (projectileRepository.hasProjectileData(projectileName)) {
                 ItemStack itemStack = projectileHandler.getItemStackFromKey(projectileName);
                 player.getInventory().addItem(itemStack);
@@ -56,7 +56,7 @@ public class GiveCommand implements PlayerCommandProvider {
                 return;
             }
 
-            String projectileName = strings[2];
+            String projectileName = strings[2].toLowerCase();
             if (projectileRepository.hasProjectileData(projectileName)) {
                 ItemStack itemStack = projectileHandler.getItemStackFromKey(projectileName);
                 itemStack.setAmount(Integer.parseInt(strings[3]));
