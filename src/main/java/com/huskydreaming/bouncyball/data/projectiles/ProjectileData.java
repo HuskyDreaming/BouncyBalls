@@ -17,8 +17,9 @@ public final class ProjectileData {
     private Material material;
 
     public boolean isBouncyBlock(Block block) {
+        if (settings.contains(ProjectileSetting.ALL_BLOCKS)) return true;
         if (!blocks.isEmpty() && block != null) return blocks.contains(block.getType());
-        return true;
+        return false;
     }
 
     public void addBlock(Material material) {

@@ -12,6 +12,7 @@ public class ProjectileDefaults {
         defaultData.addSetting(ProjectileSetting.DROPS);
         defaultData.addSetting(ProjectileSetting.REMOVES);
         defaultData.addSetting(ProjectileSetting.RETURNS);
+        defaultData.addSetting(ProjectileSetting.ALL_BLOCKS);
         defaultData.addBlock(Material.GRASS_BLOCK);
         defaultData.addBlock(Material.SAND);
         defaultData.addBlock(Material.STONE);
@@ -22,6 +23,7 @@ public class ProjectileDefaults {
     public static ProjectileData snowBallData() {
         ProjectileData snowballData = new ProjectileData();
         snowballData.setMaterial(Material.SNOWBALL);
+        snowballData.addSetting(ProjectileSetting.ALL_BLOCKS);
         snowballData.addSetting(ProjectileSetting.REMOVES);
         snowballData.addSetting(ProjectileSetting.RETURNS);
         snowballData.addSetting(ProjectileSetting.DROPS);
@@ -37,6 +39,7 @@ public class ProjectileDefaults {
     public static ProjectileData turtleEggData() {
         ProjectileData turtleEggData = new ProjectileData();
         turtleEggData.setMaterial(Material.TURTLE_EGG);
+        turtleEggData.addSetting(ProjectileSetting.ALL_BLOCKS);
         turtleEggData.addSetting(ProjectileSetting.REMOVES);
         turtleEggData.addSetting(ProjectileSetting.DROPS);
         turtleEggData.setPhysics(ProjectilePhysics.LAUNCH_VELOCITY, 1.0D);
@@ -51,6 +54,7 @@ public class ProjectileDefaults {
     public static ProjectileData hotPotatoData() {
         ProjectileData hotPotatoData = new ProjectileData();
         hotPotatoData.setMaterial(Material.BAKED_POTATO);
+        hotPotatoData.addSetting(ProjectileSetting.ALL_BLOCKS);
         hotPotatoData.addSetting(ProjectileSetting.REMOVES);
         hotPotatoData.addSetting(ProjectileSetting.RETURNS);
         hotPotatoData.addSetting(ProjectileSetting.DROPS);
@@ -66,6 +70,7 @@ public class ProjectileDefaults {
     public static ProjectileData newtonsAppleData() {
         ProjectileData newtonsAppleData = new ProjectileData();
         newtonsAppleData.setMaterial(Material.APPLE);
+        newtonsAppleData.addSetting(ProjectileSetting.ALL_BLOCKS);
         newtonsAppleData.addSetting(ProjectileSetting.REMOVES);
         newtonsAppleData.addSetting(ProjectileSetting.RETURNS);
         newtonsAppleData.addSetting(ProjectileSetting.DROPS);
@@ -81,6 +86,7 @@ public class ProjectileDefaults {
     public static ProjectileData groovyJukeBoxData() {
         ProjectileData groovyJukeBoxData = new ProjectileData();
         groovyJukeBoxData.setMaterial(Material.JUKEBOX);
+        groovyJukeBoxData.addSetting(ProjectileSetting.ALL_BLOCKS);
         groovyJukeBoxData.addSetting(ProjectileSetting.REMOVES);
         groovyJukeBoxData.addSetting(ProjectileSetting.RETURNS);
         groovyJukeBoxData.addSetting(ProjectileSetting.DROPS);

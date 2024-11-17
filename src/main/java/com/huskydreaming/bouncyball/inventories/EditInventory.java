@@ -1,14 +1,12 @@
 package com.huskydreaming.bouncyball.inventories;
 
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
-import com.huskydreaming.bouncyball.data.projectiles.ProjectilePhysics;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
 import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
 import com.huskydreaming.bouncyball.enumerations.Menu;
 import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.inventories.InventoryItem;
-import com.huskydreaming.huskycore.storage.parseables.DefaultMenu;
 import com.huskydreaming.huskycore.utilities.builders.ItemBuilder;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.content.InventoryContents;
@@ -17,8 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -43,20 +39,12 @@ public class EditInventory implements InventoryProvider {
 
         contents.set(0, 0, InventoryItem.back(player, inventoryHandler.getBouncyBallsInventory(plugin)));
 
-        contents.set(1, 2, editBlocks());
-        contents.set(1, 3, editMaterials());
-        contents.set(1, 4, editParticles());
-        contents.set(1, 5, deleteItem());
-
-        int index = 2;
-        for (ProjectilePhysics projectilePhysics : ProjectilePhysics.values()) {
-            contents.set(2, index++, physicsItem(projectilePhysics, contents));
-        }
-
-        index = 2;
-        for (ProjectileSetting projectileSetting : ProjectileSetting.values()) {
-            contents.set(3, index++, activeItem(projectileSetting, contents));
-        }
+        contents.set(1, 1, editBlocks());
+        contents.set(1, 2, editMaterials());
+        contents.set(1, 3, editParticles());
+        contents.set(1, 4, editSettings());
+        contents.set(1, 5, editPhysics());
+        contents.set(1, 7, deleteItem());
     }
 
     @Override
@@ -65,14 +53,23 @@ public class EditInventory implements InventoryProvider {
     }
 
     private ClickableItem editBlocks() {
+        ProjectileData projectileData = projectileRepository.getProjectileData(key);
+        Set<ProjectileSetting> settings = projectileData.getSettings();
+
+        boolean allBlocks = settings.contains(ProjectileSetting.ALL_BLOCKS);
+
+        String title = allBlocks ? Menu.EDIT_BLOCK_DISABLED_TITLE.parse() : Menu.EDIT_BLOCK_TITLE.parse();
+        List<String> lore = allBlocks ? Menu.EDIT_BLOCK_DISABLED_LORE.parseList() : Menu.EDIT_BLOCK_LORE.parseList();
+        Material material = allBlocks ? Material.BEDROCK : Material.GRASS_BLOCK;
+
         ItemStack itemStack = ItemBuilder.create()
-                .setDisplayName(Menu.EDIT_BLOCK_TITLE.parse())
-                .setLore(Menu.EDIT_BLOCK_LORE.parseList())
-                .setMaterial(Material.GRASS_BLOCK)
+                .setDisplayName(title)
+                .setLore(lore)
+                .setMaterial(material)
                 .build();
 
         return ClickableItem.of(itemStack, e -> {
-            if (e.getWhoClicked() instanceof Player player) {
+            if (e.getWhoClicked() instanceof Player player && !allBlocks) {
                 inventoryHandler.getBlockInventory(player.getWorld(), plugin, key).open(player);
             }
         });
@@ -88,6 +85,34 @@ public class EditInventory implements InventoryProvider {
         return ClickableItem.of(itemStack, e -> {
             if (e.getWhoClicked() instanceof Player player) {
                 inventoryHandler.getMaterialInventory(player.getWorld(), plugin, key).open(player);
+            }
+        });
+    }
+
+    private ClickableItem editSettings() {
+        ItemStack itemStack = ItemBuilder.create()
+                .setDisplayName(Menu.EDIT_SETTINGS_TITLE.parse())
+                .setLore(Menu.EDIT_SETTINGS_LORE.parseList())
+                .setMaterial(Material.COMPARATOR)
+                .build();
+
+        return ClickableItem.of(itemStack, e -> {
+            if (e.getWhoClicked() instanceof Player player) {
+                inventoryHandler.getSettingsInventory(plugin, key).open(player);
+            }
+        });
+    }
+
+    private ClickableItem editPhysics() {
+        ItemStack itemStack = ItemBuilder.create()
+                .setDisplayName(Menu.EDIT_PHYSICS_TITLE.parse())
+                .setLore(Menu.EDIT_SETTINGS_LORE.parseList())
+                .setMaterial(Material.FEATHER)
+                .build();
+
+        return ClickableItem.of(itemStack, e -> {
+            if (e.getWhoClicked() instanceof Player player) {
+                inventoryHandler.getPhysicsInventory(plugin, key).open(player);
             }
         });
     }
@@ -123,78 +148,6 @@ public class EditInventory implements InventoryProvider {
         return ClickableItem.of(itemStack, e -> {
             if (e.getWhoClicked() instanceof Player player) {
                 inventoryHandler.getParticleInventory(plugin, key).open(player);
-            }
-        });
-    }
-
-    private ClickableItem activeItem(ProjectileSetting projectileSetting, InventoryContents contents) {
-        String materialEnabled = DefaultMenu.ENABLE_MATERIAL.parse();
-        String materialDisabled = DefaultMenu.DISABLED_MATERIAL.parse();
-
-        String displayNameEnabled = DefaultMenu.ENABLE_TITLE.parameterize(projectileSetting.name());
-        String displayNameDisabled = DefaultMenu.DISABLED_TITLE.parameterize(projectileSetting.name());
-
-        ProjectileData projectileData = projectileRepository.getProjectileData(key);
-        Set<ProjectileSetting> settings = projectileData.getSettings();
-
-        boolean enabled = settings.contains(projectileSetting);
-
-        String displayName = enabled ? displayNameEnabled : displayNameDisabled;
-        Material material = Material.valueOf(enabled ? materialEnabled : materialDisabled);
-        String description = enabled ? DefaultMenu.DESCRIPTION_ENABLE.parse() : DefaultMenu.DESCRIPTION_DISABLE.parse();
-
-        List<String> strings = new ArrayList<>();
-        strings.add(DefaultMenu.DESCRIPTION_DEFAULT.parameterize(projectileSetting.getDescription()));
-        strings.add("");
-        strings.add(description);
-
-        ItemStack itemStack = ItemBuilder.create()
-                .setDisplayName(displayName)
-                .setLore(strings)
-                .setMaterial(material)
-                .build();
-
-        return ClickableItem.of(itemStack, e -> {
-            if (e.getWhoClicked() instanceof Player player) {
-                if (settings.contains(projectileSetting)) {
-                    projectileData.removeSetting(projectileSetting);
-                } else {
-                    projectileData.addSetting(projectileSetting);
-                }
-                contents.inventory().open(player);
-            }
-        });
-    }
-
-    private ClickableItem physicsItem(ProjectilePhysics projectilePhysics, InventoryContents contents) {
-        ProjectileData projectileData = projectileRepository.getProjectileData(key);
-        double amount = projectileData.getPhysics(projectilePhysics);
-
-        ItemStack itemStack = ItemBuilder.create()
-                .setDisplayName(Menu.EDIT_PHYSICS_TITLE.parameterize(projectilePhysics.name()))
-                .setLore(Menu.EDIT_PHYSICS_LORE.parameterizeList(projectilePhysics.getDescription(), amount))
-                .setMaterial(projectilePhysics.getMaterial())
-                .build();
-
-        return ClickableItem.of(itemStack, e -> {
-            if (e.getWhoClicked() instanceof Player player) {
-                double increment = projectilePhysics.getIncrement();
-                DecimalFormat df = new DecimalFormat("0.00");
-                if (e.isLeftClick()) {
-                    projectileData.setPhysics(projectilePhysics, Double.parseDouble(df.format(amount + increment)));
-                    contents.inventory().open(player);
-                    return;
-                }
-                if (e.isRightClick()) {
-                    if (amount <= increment) {
-                        // This is a safeguard in case the amount is offset
-                        projectileData.setPhysics(projectilePhysics, increment);
-                        contents.inventory().open(player);
-                        return;
-                    }
-                    projectileData.setPhysics(projectilePhysics, Double.parseDouble(df.format(amount - increment)));
-                    contents.inventory().open(player);
-                }
             }
         });
     }

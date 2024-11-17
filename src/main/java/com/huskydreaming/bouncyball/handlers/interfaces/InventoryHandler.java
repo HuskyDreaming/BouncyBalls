@@ -16,5 +16,9 @@ public interface InventoryHandler extends Handler {
 
     SmartInventory getParticleInventory(HuskyPlugin plugin, String key);
 
+    SmartInventory getSettingsInventory(HuskyPlugin plugin, String key);
+
+    SmartInventory getPhysicsInventory(HuskyPlugin plugin, String key);
+
     SmartInventory getColorInventory(HuskyPlugin plugin, String key);
 }

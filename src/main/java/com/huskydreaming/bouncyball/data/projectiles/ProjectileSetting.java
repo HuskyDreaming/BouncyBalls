@@ -5,6 +5,7 @@ public enum ProjectileSetting {
     DROPS("Item drops when projectile stops moving"),
     GLOWS("Makes the projectile glow"),
     ITEM_NAME("Name above item when dropped"),
+    ALL_BLOCKS("Bounces on all blocks"),
     REMOVES("Projectile is removed from inventory");
 
     private final String description;

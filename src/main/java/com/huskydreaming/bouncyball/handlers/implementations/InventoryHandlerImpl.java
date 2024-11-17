@@ -2,6 +2,8 @@ package com.huskydreaming.bouncyball.handlers.implementations;
 
 import com.huskydreaming.bouncyball.data.particles.ParticleColor;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectilePhysics;
+import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
 import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
 import com.huskydreaming.bouncyball.inventories.*;
 import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
@@ -51,7 +53,7 @@ public class InventoryHandlerImpl implements InventoryHandler {
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("editInventory")
-                .size(5, 9)
+                .size(3, 9)
                 .provider(mainInventory)
                 .title("Editing: " + name)
                 .build();
@@ -110,8 +112,40 @@ public class InventoryHandlerImpl implements InventoryHandler {
                 .manager(inventoryManager)
                 .id("particleInventory")
                 .size(Math.min(rows + 2, 5), 9)
-                .provider(particleInventory)
                 .title("Particles: " + name)
+                .provider(particleInventory)
+                .build();
+    }
+
+    @Override
+    public SmartInventory getSettingsInventory(HuskyPlugin plugin, String key) {
+        ProjectileSetting[] settings = ProjectileSetting.values();
+        int rows = (int) Math.ceil((double) settings.length / 9);
+
+        SettingsInventory settingsInventory = new SettingsInventory(plugin, key, rows, settings);
+        String name = Util.capitalize(key.replace("_", " "));
+        return SmartInventory.builder()
+                .manager(inventoryManager)
+                .id("settingsInventory")
+                .title("Settings: " + name)
+                .size(Math.min(rows + 2, 5), 9)
+                .provider(settingsInventory)
+                .build();
+    }
+
+    @Override
+    public SmartInventory getPhysicsInventory(HuskyPlugin plugin, String key) {
+        ProjectilePhysics[] physics = ProjectilePhysics.values();
+        int rows = (int) Math.ceil((double) physics.length / 9);
+
+        PhysicsInventory physicsInventory = new PhysicsInventory(plugin, key, rows, physics);
+        String name = Util.capitalize(key.replace("_", " "));
+        return SmartInventory.builder()
+                .manager(inventoryManager)
+                .id("physicsInventory")
+                .title("Physics: " + name)
+                .size(Math.min(rows + 2, 5), 9)
+                .provider(physicsInventory)
                 .build();
     }
 
@@ -124,9 +158,9 @@ public class InventoryHandlerImpl implements InventoryHandler {
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("colorInventory")
+                .title("Select Color")
                 .size(Math.min(rows + 2, 5), 9)
                 .provider(colorInventory)
-                .title("Particle Color")
                 .build();
     }
 
