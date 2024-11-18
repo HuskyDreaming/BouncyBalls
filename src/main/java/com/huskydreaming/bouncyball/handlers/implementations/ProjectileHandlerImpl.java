@@ -21,9 +21,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProjectileHandlerImpl implements ProjectileHandler {
@@ -33,6 +31,7 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
     private ProjectileRepository projectileRepository;
     private final Map<Projectile, String> projectileMap = new ConcurrentHashMap<>();
     private final Map<UUID, Long> cooldownMap = new ConcurrentHashMap<>();
+    private final Set<UUID> cancelledShooters = new HashSet<>();
 
     @Override
     public void initialize(HuskyPlugin plugin) {
@@ -57,15 +56,22 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
                 cooldownMap.remove(uuid);
             }
         }
+
         ProjectileData projectileData = projectileRepository.getProjectileData(key);
 
         if (projectileData.getSettings().contains(ProjectileSetting.REMOVES)) {
             itemStack.setAmount(itemStack.getAmount() - 1);
         }
 
+
         Snowball projectile = player.launchProjectile(Snowball.class);
-        PersistentDataContainer persistentDataContainer = projectile.getPersistentDataContainer();
-        persistentDataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);
+        if(cancelledShooters.contains(uuid)) {
+            cancelledShooters.remove(uuid);
+            return;
+        }
+
+        PersistentDataContainer dataContainer = projectile.getPersistentDataContainer();
+        dataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);
 
         double launchVelocity = projectileData.getPhysics(ProjectilePhysics.LAUNCH_VELOCITY);
         long cooldown = (long) projectileData.getPhysics(ProjectilePhysics.COOLDOWN);
@@ -137,7 +143,15 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
 
             String key = getKeyFromProjectile(projectile);
 
-            Snowball newProjectile = (Snowball) projectile.getWorld().spawnEntity(projectile.getLocation(), projectile.getType());
+            World world = projectile.getWorld();
+            UUID uuid = world.getUID();
+            Snowball newProjectile = (Snowball) world.spawnEntity(projectile.getLocation(), projectile.getType());
+
+            if(cancelledShooters.contains(world.getUID())) {
+                cancelledShooters.remove(uuid);
+                return null;
+            }
+
             PersistentDataContainer persistentDataContainer = newProjectile.getPersistentDataContainer();
             persistentDataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);
             newProjectile.setGlowing(projectileData.getSettings().contains(ProjectileSetting.GLOWS));
@@ -145,13 +159,13 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
             newProjectile.setVelocity(velocity.subtract(direction).normalize().multiply(speed));
             newProjectile.setShooter(projectile.getShooter());
             newProjectile.setInvulnerable(true);
+
             return newProjectile;
         }
 
         onProjectileEnd(projectile);
         dropProjectile(projectile);
         removeProjectile(projectile);
-
         return null;
     }
 
@@ -243,5 +257,20 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
 
         BlockFace blockFace = nextBlock.getFace(previousBlock);
         return blockFace == BlockFace.SELF ? BlockFace.UP : blockFace;
+    }
+
+    @Override
+    public NamespacedKey getProjectileNameSpacedKey() {
+        return projectileNameSpacedKey;
+    }
+
+    @Override
+    public void setCancelled(Player player) {
+        cancelledShooters.add(player.getUniqueId());
+    }
+
+    @Override
+    public void setCancelled(World world) {
+        cancelledShooters.add(world.getUID());
     }
 }

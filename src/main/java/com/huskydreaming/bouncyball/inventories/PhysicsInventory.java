@@ -69,7 +69,7 @@ public class PhysicsInventory extends InventoryPageProvider<ProjectilePhysics> {
             if (event.isRightClick()) {
                 if (amount <= increment) {
                     // This is a safeguard in case the amount is offset
-                    projectileData.setPhysics(physics, increment);
+                    projectileData.setPhysics(physics, 0.0D);
                     contents.inventory().open(player);
                     return;
                 }

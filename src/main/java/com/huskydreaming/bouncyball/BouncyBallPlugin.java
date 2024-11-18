@@ -13,6 +13,9 @@ import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
 import com.huskydreaming.bouncyball.handlers.interfaces.LocalizationHandler;
 import com.huskydreaming.bouncyball.handlers.interfaces.ParticleHandler;
 import com.huskydreaming.bouncyball.handlers.interfaces.ProjectileHandler;
+import com.huskydreaming.bouncyball.listeners.BlockListener;
+import com.huskydreaming.bouncyball.listeners.EntityListener;
+import com.huskydreaming.bouncyball.listeners.PlayerListener;
 import com.huskydreaming.bouncyball.listeners.ProjectileListener;
 import com.huskydreaming.bouncyball.repositories.implementations.ParticleRepositoryImpl;
 import com.huskydreaming.bouncyball.repositories.implementations.ProjectileRepositoryImpl;
@@ -46,6 +49,11 @@ public class BouncyBallPlugin extends HuskyPlugin {
         commandHandler.add(new GiveCommand(this));
         commandHandler.add(new ReloadCommand(this));
 
-        registerListeners(new ProjectileListener(this));
+        registerListeners(
+                new BlockListener(this),
+                new EntityListener(this),
+                new PlayerListener(this),
+                new ProjectileListener(this)
+        );
     }
 }

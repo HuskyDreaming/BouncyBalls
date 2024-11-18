@@ -27,8 +27,7 @@ public class ReloadCommand implements CommandProvider {
 
     @Override
     public void onCommand(CommandSender commandSender, String[] strings) {
-        localizationHandler.getLocale().reload(plugin);
-        localizationHandler.getMenu().reload(plugin);
+        localizationHandler.reload(plugin);
 
         particleRepository.postDeserialize(plugin);
         projectileRepository.postDeserialize(plugin);

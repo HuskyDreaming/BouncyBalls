@@ -20,12 +20,11 @@ public class ParticleHandlerImpl implements ParticleHandler {
     @Override
     public void postInitialize(HuskyPlugin plugin) {
         particleRepository = plugin.provide(ParticleRepository.class);
-
         ProjectileHandler projectileHandler = plugin.provide(ProjectileHandler.class);
         Map<Projectile, String> projectileMap = projectileHandler.getProjectileMap();
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> projectileMap.forEach((projectile, s) -> {
-            if(projectile == null) return;
+            if(s == null) projectileHandler.removeProjectile(projectile);
 
             Location location = projectile.getLocation();
             World world = location.getWorld();
@@ -40,6 +39,7 @@ public class ParticleHandlerImpl implements ParticleHandler {
             } else {
                 world.spawnParticle(particleData.getParticle(), location, particleData.getCount());
             }
+            Bukkit.getLogger().info(String.valueOf(projectileMap.size()));
         }), 0L, 1L);
     }
 }

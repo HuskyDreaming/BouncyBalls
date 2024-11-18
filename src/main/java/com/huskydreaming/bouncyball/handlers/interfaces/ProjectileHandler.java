@@ -2,6 +2,8 @@ package com.huskydreaming.bouncyball.handlers.interfaces;
 
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
 import com.huskydreaming.huskycore.handlers.interfaces.Handler;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -40,4 +42,10 @@ public interface ProjectileHandler extends Handler {
     ItemStack getItemStackFromProjectile(Projectile projectile);
 
     BlockFace getInverseFace(Projectile projectile);
+
+    NamespacedKey getProjectileNameSpacedKey();
+
+    void setCancelled(Player player);
+
+    void setCancelled(World world);
 }

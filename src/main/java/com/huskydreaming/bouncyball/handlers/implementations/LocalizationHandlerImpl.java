@@ -35,12 +35,19 @@ public class LocalizationHandlerImpl implements LocalizationHandler {
     }
 
     @Override
-    public Yaml getLocale() {
-        return locale;
-    }
+    public void reload(HuskyPlugin plugin) {
+        locale.load(plugin);
+        Locale.setConfiguration(locale.getConfiguration());
 
-    @Override
-    public Yaml getMenu() {
-        return menu;
+        for (Locale message : Locale.values()) {
+            locale.getConfiguration().set(message.toString(), message.parseList() != null ? message.parseList() : message.parse());
+        }
+
+        menu.load(plugin);
+        Menu.setConfiguration(menu.getConfiguration());
+
+        for (Menu message : Menu.values()) {
+            menu.getConfiguration().set(message.toString(), message.parseList() != null ? message.parseList() : message.parse());
+        }
     }
 }

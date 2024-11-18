@@ -4,16 +4,14 @@ import com.huskydreaming.bouncyball.BouncyBallPlugin;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
 import com.huskydreaming.bouncyball.handlers.interfaces.ProjectileHandler;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -27,37 +25,11 @@ public class ProjectileListener implements Listener {
         this.projectileHandler = plugin.provide(ProjectileHandler.class);
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-            ItemStack itemStack = event.getItem();
-            if (itemStack == null) return;
-
-            String key = projectileHandler.getKeyFromItemStack(itemStack);
-            if (key != null) {
-                projectileHandler.launchProjectile(plugin, event.getPlayer(), itemStack, key);
-                event.setCancelled(true);
-            } else {
-                event.setCancelled(false);
-            }
-        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            ItemStack itemStack = event.getItem();
-            if (itemStack == null) return;
-
-            String key = projectileHandler.getKeyFromItemStack(itemStack);
-            if (key != null) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onBlockEvent(BlockIgniteEvent event) {
-        if (event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
-            Entity entity = event.getIgnitingEntity();
-
-            if (entity != null && projectileHandler.hasProjectileData(entity)) {
-                event.setCancelled(true);
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLaunch(ProjectileLaunchEvent event) {
+        if (event.isCancelled() && event.getEntity() instanceof Snowball snowball) {
+            if(snowball.getShooter() instanceof Player player) {
+                projectileHandler.setCancelled(player);
             }
         }
     }
@@ -71,7 +43,6 @@ public class ProjectileListener implements Listener {
             if (projectileData == null) return;
 
             if (event.getHitEntity() instanceof Player player) {
-
                 if (projectileData.getSettings().contains(ProjectileSetting.RETURNS)) {
 
                     ItemStack itemStack = projectileHandler.getItemStackFromProjectile(snowball);
