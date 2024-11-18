@@ -25,6 +25,8 @@ public class ParticleHandlerImpl implements ParticleHandler {
         Map<Projectile, String> projectileMap = projectileHandler.getProjectileMap();
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> projectileMap.forEach((projectile, s) -> {
+            if(projectile == null) return;
+
             Location location = projectile.getLocation();
             World world = location.getWorld();
             if (world == null) return;

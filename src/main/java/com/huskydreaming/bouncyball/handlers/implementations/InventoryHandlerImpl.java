@@ -8,6 +8,7 @@ import com.huskydreaming.bouncyball.handlers.interfaces.InventoryHandler;
 import com.huskydreaming.bouncyball.inventories.*;
 import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
+import com.huskydreaming.huskycore.utilities.ChatUtil;
 import com.huskydreaming.huskycore.utilities.Util;
 import fr.minuskube.inv.InventoryManager;
 import fr.minuskube.inv.SmartInventory;
@@ -49,7 +50,7 @@ public class InventoryHandlerImpl implements InventoryHandler {
     @Override
     public SmartInventory getEditInventory(HuskyPlugin plugin, String key) {
         EditInventory mainInventory = new EditInventory(plugin, key);
-        String name = Util.capitalize(key.replace("_", " "));
+        String name = ChatUtil.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("editInventory")
@@ -70,7 +71,7 @@ public class InventoryHandlerImpl implements InventoryHandler {
 
         int rows = (int) Math.ceil((double) supportedMaterials.length / 9);
         MaterialInventory materialInventory = new MaterialInventory(plugin, key, rows, supportedMaterials, false);
-        String name = Util.capitalize(key.replace("_", " "));
+        String name = ChatUtil.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("materialInventory")
@@ -91,7 +92,7 @@ public class InventoryHandlerImpl implements InventoryHandler {
 
         int rows = (int) Math.ceil((double) supportedMaterials.length / 9);
         MaterialInventory materialInventory = new MaterialInventory(plugin, key, rows, supportedMaterials, true);
-        String name = Util.capitalize(key.replace("_", " "));
+        String name = ChatUtil.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("blockInventory")
@@ -107,7 +108,7 @@ public class InventoryHandlerImpl implements InventoryHandler {
         int rows = (int) Math.ceil((double) particles.length / 9);
 
         ParticleInventory particleInventory = new ParticleInventory(plugin, key, rows, particles);
-        String name = Util.capitalize(key.replace("_", " "));
+        String name = ChatUtil.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("particleInventory")
@@ -123,7 +124,7 @@ public class InventoryHandlerImpl implements InventoryHandler {
         int rows = (int) Math.ceil((double) settings.length / 9);
 
         SettingsInventory settingsInventory = new SettingsInventory(plugin, key, rows, settings);
-        String name = Util.capitalize(key.replace("_", " "));
+        String name = ChatUtil.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("settingsInventory")
@@ -139,7 +140,7 @@ public class InventoryHandlerImpl implements InventoryHandler {
         int rows = (int) Math.ceil((double) physics.length / 9);
 
         PhysicsInventory physicsInventory = new PhysicsInventory(plugin, key, rows, physics);
-        String name = Util.capitalize(key.replace("_", " "));
+        String name = ChatUtil.capitalize(key.replace("_", " "));
         return SmartInventory.builder()
                 .manager(inventoryManager)
                 .id("physicsInventory")

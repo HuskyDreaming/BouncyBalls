@@ -45,6 +45,9 @@ public class ProjectileRepositoryImpl implements ProjectileRepository {
             String materialName = configuration.getString(key + ".material");
             if(materialName != null) projectileData.setMaterial(Material.valueOf(materialName));
 
+            double cooldown = configuration.getDouble(key + ".physics.cooldown");
+            projectileData.setPhysics(ProjectilePhysics.COOLDOWN, cooldown);
+
             double damping = configuration.getDouble(key + ".physics.damping");
             projectileData.setPhysics(ProjectilePhysics.DAMPING, damping);
 
@@ -87,6 +90,7 @@ public class ProjectileRepositoryImpl implements ProjectileRepository {
             configuration.set(key + ".settings", settings);
             configuration.set(key + ".blocks", blockMaterials);
             configuration.set(key + ".material", projectileData.getMaterial().name());
+            configuration.set(key + ".physics.cooldown", projectileData.getPhysics(ProjectilePhysics.COOLDOWN));
             configuration.set(key + ".physics.damping", projectileData.getPhysics(ProjectilePhysics.DAMPING));
             configuration.set(key + ".physics.launch-velocity", projectileData.getPhysics(ProjectilePhysics.LAUNCH_VELOCITY));
             configuration.set(key + ".physics.threshold", projectileData.getPhysics(ProjectilePhysics.THRESHOLD));

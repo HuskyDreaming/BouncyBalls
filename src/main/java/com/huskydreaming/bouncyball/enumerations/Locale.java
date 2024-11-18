@@ -19,6 +19,7 @@ public enum Locale implements Parseable {
     BOUNCY_BALL_GIVE_AMOUNT("You have been given &ex<0> <1>&7 bouncy ball(s)."),
     BOUNCY_BALL_SEND("You have given &a<0> &7a <1>&7 bouncy ball."),
     BOUNCY_BALL_SEND_AMOUNT("You have given &a<0> &ex<1> <2>&7 bouncy ball(s)."),
+    COOLDOWN("You can throw a bouncy ball again in &b<0>&7."),
     INVALID_NUMBER("You must provide a valid number"),
     PLAYER_NULL("That player does not seem to exist."),
     PLAYER_OFFLINE("You do not have permissions to run that command."),

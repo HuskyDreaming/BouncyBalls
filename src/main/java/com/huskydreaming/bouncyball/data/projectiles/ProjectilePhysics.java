@@ -3,6 +3,7 @@ package com.huskydreaming.bouncyball.data.projectiles;
 import org.bukkit.Material;
 
 public enum ProjectilePhysics {
+    COOLDOWN("How often the projectile can be thrown", Material.WATER_BUCKET, 1.0D),
     DAMPING("Velocity damped when it hits a surface", Material.FEATHER, 0.15D),
     LAUNCH_VELOCITY("Initial velocity of the snowball when thrown", Material.BLAZE_POWDER, 0.1D),
     THRESHOLD("The speed at which the projectile disintegrate", Material.GUNPOWDER, 0.1D);

@@ -3,10 +3,12 @@ package com.huskydreaming.bouncyball.handlers.implementations;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileData;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectilePhysics;
 import com.huskydreaming.bouncyball.data.projectiles.ProjectileSetting;
+import com.huskydreaming.bouncyball.enumerations.Locale;
 import com.huskydreaming.bouncyball.handlers.interfaces.ProjectileHandler;
 import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository;
 import com.huskydreaming.huskycore.HuskyPlugin;
-import com.huskydreaming.huskycore.utilities.Util;
+import com.huskydreaming.huskycore.utilities.ChatUtil;
+import com.huskydreaming.huskycore.utilities.TimeUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -21,6 +23,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProjectileHandlerImpl implements ProjectileHandler {
@@ -29,6 +32,7 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
 
     private ProjectileRepository projectileRepository;
     private final Map<Projectile, String> projectileMap = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> cooldownMap = new ConcurrentHashMap<>();
 
     @Override
     public void initialize(HuskyPlugin plugin) {
@@ -42,6 +46,17 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
 
     @Override
     public void launchProjectile(Plugin plugin, Player player, ItemStack itemStack, String key) {
+        UUID uuid = player.getUniqueId();
+        if(cooldownMap.containsKey(uuid)) {
+            long difference = cooldownMap.get(uuid) - System.currentTimeMillis();
+            if((difference / 1000L) > 0) {
+                String formattedTime = TimeUtil.convertTimeStamp(difference);
+                player.sendMessage(Locale.COOLDOWN.prefix(formattedTime));
+                return;
+            } else {
+                cooldownMap.remove(uuid);
+            }
+        }
         ProjectileData projectileData = projectileRepository.getProjectileData(key);
 
         if (projectileData.getSettings().contains(ProjectileSetting.REMOVES)) {
@@ -50,9 +65,12 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
 
         Snowball projectile = player.launchProjectile(Snowball.class);
         PersistentDataContainer persistentDataContainer = projectile.getPersistentDataContainer();
-
         persistentDataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);
+
         double launchVelocity = projectileData.getPhysics(ProjectilePhysics.LAUNCH_VELOCITY);
+        long cooldown = (long) projectileData.getPhysics(ProjectilePhysics.COOLDOWN);
+        if(cooldown != 0.0D) cooldownMap.put(uuid, (cooldown * 1000L) + System.currentTimeMillis());
+
         projectile.setVelocity(player.getLocation().getDirection().multiply(launchVelocity));
         projectile.setGlowing(projectileData.getSettings().contains(ProjectileSetting.GLOWS));
         projectile.setItem(new ItemStack(projectileData.getMaterial()));
@@ -179,7 +197,7 @@ public class ProjectileHandlerImpl implements ProjectileHandler {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return null;
 
-        itemMeta.setDisplayName(ChatColor.RESET + Util.capitalize(key.replace("_", " ")));
+        itemMeta.setDisplayName(ChatColor.RESET + ChatUtil.capitalize(key.replace("_", " ")));
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
 
         persistentDataContainer.set(projectileNameSpacedKey, PersistentDataType.STRING, key);

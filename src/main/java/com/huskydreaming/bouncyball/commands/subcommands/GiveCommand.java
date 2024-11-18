@@ -6,7 +6,7 @@ import com.huskydreaming.bouncyball.repositories.interfaces.ProjectileRepository
 import com.huskydreaming.huskycore.HuskyPlugin;
 import com.huskydreaming.huskycore.commands.annotations.CommandAnnotation;
 import com.huskydreaming.huskycore.commands.providers.PlayerCommandProvider;
-import com.huskydreaming.huskycore.utilities.Util;
+import com.huskydreaming.huskycore.utilities.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -51,7 +51,7 @@ public class GiveCommand implements PlayerCommandProvider {
                 return;
             }
 
-            if (!Util.isNumeric(strings[3])) {
+            if (!NumberUtil.isNumeric(strings[3])) {
                 player.sendMessage(Locale.INVALID_NUMBER.prefix(strings[1]));
                 return;
             }

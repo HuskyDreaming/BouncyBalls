@@ -3,10 +3,7 @@ package com.huskydreaming.bouncyball.data.projectiles;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class ProjectileData {
